@@ -10,7 +10,7 @@ public class TelaGame extends JFrame{
 	String nomeCartaLeft, nomeCartaRight;
 	
 	//jogadores
-	ArrayList<Jogador> jogadores;
+	ArrayList<Jogador> jogadores = Main.game.getJogadores();
 	JLabel[] nomesLabel, c1Label, c2Label, torroesLabel;
 	JPanel[] jogadoresPanels;
 	
@@ -21,10 +21,11 @@ public class TelaGame extends JFrame{
 	public TelaGame() {
 		super("Intrigas Digital - Game");
 		
+		nomeCartaLeft=jogadores.get(0).getCartasNaMao().get(0).getImgFileGed();
+		nomeCartaRight=jogadores.get(0).getCartasNaMao().get(1).getImgFileGed();
 		//para fins de teste: -----------------------------------------------------------------------
-		nomeCartaLeft="playersNineta.png";
-		nomeCartaRight="playersKane.png";
-		
+
+		/*
 		jogadores = new ArrayList<Jogador>();
 		
 		Jogador j0 = new Jogador("j0");
@@ -35,6 +36,7 @@ public class TelaGame extends JFrame{
 		
 		Jogador j2 = new Jogador("j2");
 		jogadores.add(j2);
+		*/
 		//para fins de teste: -----------------------------------------------------------------------
 		
 		bottomPanel=new JPanel(new FlowLayout());
