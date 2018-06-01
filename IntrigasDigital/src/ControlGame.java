@@ -2,12 +2,13 @@ import java.util.ArrayList;
 
 public class ControlGame {
 	
-	ArrayList<Jogador> jogadores; 
+	int numInicialJogadores =3;
+	ArrayList<Jogador> jogadores = new ArrayList<Jogador>(); 
 	Jogador jogadorDaVez, jogadorDuvidando, jogadorDeQuemSeDuvida; 
 	EnumPersonagem ultimoPersUsado;
 	ClassAcaoComb ultimaAcaoComb;
 	EnumTipoAcao ultimoTipoAcao;
-	Baralho baralho;
+	Baralho baralho = new Baralho();
 	
 	public boolean checarFimDeJogo() {
 		boolean sohTemUmPlayer = false;
@@ -25,8 +26,18 @@ public class ControlGame {
 
 	//getters and setters
 	
+	
+	
 	public ArrayList<Jogador> getJogadores() {
 		return jogadores;
+	}
+
+	public int getNumInicialJogadores() {
+		return numInicialJogadores;
+	}
+
+	public void setNumInicialJogadores(int numInicialJogadores) {
+		this.numInicialJogadores = numInicialJogadores;
 	}
 
 	public void setJogadores(ArrayList<Jogador> jogadores) {

@@ -6,6 +6,10 @@ public class Jogador {
 	ArrayList<Carta> cartasNaMao;
 	int torroes;
 	
+	public Jogador(String vnome) {
+		nome=vnome;
+		torroes = 0;
+	}
 	
 	public void perdeCartaAleatoria() {
 		SecureRandom random = new SecureRandom();

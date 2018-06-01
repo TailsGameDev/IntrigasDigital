@@ -27,7 +27,7 @@ public class TelaInit extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				setVisible(false);
-				//otherFrame.setVisible(true);
+				Main.fluxo.instanciaTelaCadastroJogadores();
 			}
 		});
 		
@@ -50,6 +50,8 @@ public class TelaInit extends JFrame {
 	}
 	
 	public static void main (String args[]) {
+		Main.game = new ControlGame();
+		Main.fluxo = new Fluxo();
 		TelaInit telaInit = new TelaInit();
 	}
 	

@@ -3,7 +3,21 @@ import java.util.ArrayList;
 
 public class Baralho {
 	ArrayList<Carta> cartas;
-
+	
+	public Baralho() {
+		ArrayList<Carta> cards = new ArrayList<Carta>();
+		for(int i =0; i<3 ; i++) {
+			cards.add(new Carta(EnumPersonagem.KANE));
+			cards.add(new Carta(EnumPersonagem.JULIUS));
+			cards.add(new Carta(EnumPersonagem.LAURA));
+			cards.add(new Carta(EnumPersonagem.MAGNUS));
+			cards.add(new Carta(EnumPersonagem.NINETA));
+			cards.add(new Carta(EnumPersonagem.PISTONE));
+		}
+		cartas = cards;
+		embaralhar();
+	}
+	
 	public ArrayList<Carta> getCartas() {
 		return cartas;
 	}

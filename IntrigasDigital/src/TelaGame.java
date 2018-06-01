@@ -27,16 +27,13 @@ public class TelaGame extends JFrame{
 		
 		jogadores = new ArrayList<Jogador>();
 		
-		Jogador j0 = new Jogador();
-		j0.setNome("j0");
+		Jogador j0 = new Jogador("j0");
 		jogadores.add(j0);
 		
-		Jogador j1 = new Jogador();
-		j1.setNome("j1");
+		Jogador j1 = new Jogador("j1");
 		jogadores.add(j1);
 		
-		Jogador j2 = new Jogador();
-		j2.setNome("j2");
+		Jogador j2 = new Jogador("j2");
 		jogadores.add(j2);
 		//para fins de teste: -----------------------------------------------------------------------
 		
