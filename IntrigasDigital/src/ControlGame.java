@@ -2,9 +2,9 @@ import java.util.ArrayList;
 
 public class ControlGame {
 	
-	int numInicialJogadores =3;
+	int numInicialJogadores = 3;
 	ArrayList<Jogador> jogadores = new ArrayList<Jogador>(); 
-	Jogador jogadorDaVez, jogadorDuvidando, jogadorDeQuemSeDuvida; 
+	Jogador jogadorDaVez, jogadorDuvidando, jogadorDeQuemSeDuvida, jogadorVencedor;
 	EnumPersonagem ultimoPersUsado;
 	ClassAcaoComb ultimaAcaoComb;
 	EnumTipoAcao ultimoTipoAcao;
@@ -98,6 +98,14 @@ public class ControlGame {
 
 	public void setUltimoTipoAcao(EnumTipoAcao ultimoTipoAcao) {
 		this.ultimoTipoAcao = ultimoTipoAcao;
+	}
+
+	public Jogador getJogadorVencedor() {
+		return jogadorVencedor;
+	}
+
+	public void setJogadorVencedor(Jogador jogadorVencedor) {
+		this.jogadorVencedor = jogadorVencedor;
 	}
 	
 	

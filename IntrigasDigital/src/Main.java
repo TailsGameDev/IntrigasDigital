@@ -1,13 +1,29 @@
-import java.util.Scanner;
 
 public class Main{
 	
-	public static ControlGame game;
-	public static Fluxo fluxo;
+	public static ControlGame game = new ControlGame();
+	public static Fluxo fluxo= new Fluxo();
+	public static TelaInit telaInit = new TelaInit();
+	public static TelaCadastroJogadores telaCadastroJogadores = new TelaCadastroJogadores();;
+	public static TelaGame telaGame;
+	public static TelaAcaoPersonagem telaAcaoPersonagem = new TelaAcaoPersonagem();
+	public static TelaAcaoCombinada telaAcaoCombinada = new TelaAcaoCombinada();
+	public static TelaEnd telaEnd;
+	public static ControlJogador controlJogador = new ControlJogador();
 	
 	public static void main(String args[]) {
-		Main.game = new ControlGame();
-		Main.fluxo = new Fluxo();
-		Main.fluxo.instanciaTelaInit();
+		Main.fluxo.ativaTelaInit();
+		telaCadastroJogadores.setVisible(false);
+		telaAcaoPersonagem.setVisible(false);
+		telaAcaoCombinada.setVisible(false);
+	}
+	
+	public static void criaTelaGame() {	
+		game.jogadorDaVez=game.getJogadores().get(0); //o jogo comeca com o player principal
+		telaGame = new TelaGame();
+	}
+	
+	public static void criaTelaEnd() {
+		telaEnd = new TelaEnd();
 	}
 }

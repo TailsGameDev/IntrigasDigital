@@ -30,7 +30,9 @@ public class Baralho {
 		ArrayList<Carta> embaralhadas = new ArrayList<Carta>();
 		SecureRandom random = new SecureRandom();
 		
-		for (int i=0; i<cartas.size(); i++) {
+		int cartasInicialSize = cartas.size(); 
+		
+		for (int i=0; i<cartasInicialSize; i++) {
 			int aleat = random.nextInt(cartas.size());
 			embaralhadas.add(cartas.get(aleat));
 			cartas.remove(aleat);

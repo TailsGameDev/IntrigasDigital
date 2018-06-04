@@ -1,18 +1,24 @@
 import java.util.ArrayList;
 
 public class ControlJogador {
-	public void pegar1Torrao(ControlGame game) {
-		int torroes = game.getJogadorDaVez().getTorroes();
-		torroes+=1;
-		game.getJogadorDaVez().setTorroes(torroes);
+	public void pegar1Torrao(Jogador jogadorParaVerificar) {
+		if(jogadorParaVerificar == Main.game.getJogadorDaVez()) {
+			int torroes = Main.game.getJogadorDaVez().getTorroes();
+			torroes+=1;
+			Main.game.getJogadorDaVez().setTorroes(torroes);
+			Main.fluxo.passaVez();
+		}
 	}
 	
-	public void ataqueIndefensavel(ControlGame game, Jogador alvo) {
-		Jogador j = game.getJogadorDaVez();
+	public void ataqueIndefensavel(Jogador alvo) {
+		Jogador j = Main.game.getJogadorDaVez();
+		//System.out.println("ccontroladorJogador"+ j.getNome());
 		if(j.getTorroes()>=7) {
 			j.setTorroes(j.getTorroes()-7);
 			alvo.perdeCartaAleatoria();
-			game.sePerdeuTira(alvo);
+			Main.game.sePerdeuTira(alvo);
+			Main.telaGame.removeCartaDoUltimoAlvo();
+			//System.out.println("pediu pra renderizar");
 		}
 	}
 	
