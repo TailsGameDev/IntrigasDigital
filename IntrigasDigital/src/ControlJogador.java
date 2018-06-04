@@ -10,16 +10,27 @@ public class ControlJogador {
 		}
 	}
 	
-	public void ataqueIndefensavel(Jogador alvo) {
+	public void ataqueIndefensavel(Jogador solicitante, Jogador alvo) {
 		Jogador j = Main.game.getJogadorDaVez();
-		//System.out.println("ccontroladorJogador"+ j.getNome());
-		if(j.getTorroes()>=7) {
-			j.setTorroes(j.getTorroes()-7);
-			alvo.perdeCartaAleatoria();
-			Main.game.sePerdeuTira(alvo);
-			Main.telaGame.removeCartaDoUltimoAlvo();
-			//System.out.println("pediu pra renderizar");
+		if(j.getTorroes()>=7 && solicitante ==j) {
+			perdeTorroes(3,j);
+			mataCartaEMostraAGUI(alvo);
+			Main.fluxo.passaVez();
 		}
+	}
+	
+	//troca a carta zero do baralho com a carta c do jogador solicitante, embaralha, e reconfigura a GUI
+	public void trocarCarta(Jogador solicitante, Carta c) {
+		ArrayList<Carta> cartasDoJogador = solicitante.getCartasNaMao();
+		cartasDoJogador.add(Main.game.getBaralho().getCartas().get(0));
+		Main.game.getBaralho().getCartas().add(c);
+		Main.game.getBaralho().getCartas().remove(0);
+		cartasDoJogador.remove(c);
+		Main.fluxo.setOlhandoCartaDoBaralho(false);
+		Main.game.getBaralho().embaralhar();
+		Main.telaGame.baralhoBtn.setIcon(Main.game.getBaralho().versinho);
+		Main.telaGame.exibeLeftPanel();
+		Main.telaGame.exibeRightPanel();
 	}
 	
 	public void duvidar(ControlGame game) {
@@ -40,5 +51,17 @@ public class ControlJogador {
 					game.sePerdeuTira(game.jogadorDeQuemSeDuvida);
 				}
 		}
+	}
+	
+	public void mataCartaEMostraAGUI(Jogador alvo) {
+		Carta c = alvo.perdeCartaAleatoria();
+		Main.telaGame.addCartaMorta(c);
+		Main.game.sePerdeuTira(alvo);
+		Main.telaGame.removeCartaDoUltimoAlvo();
+	}
+	
+	void perdeTorroes(int qtdd, Jogador j) {
+		j.setTorroes(j.getTorroes()-7);
+		Main.telaGame.exibeSeusTorroes();
 	}
 }

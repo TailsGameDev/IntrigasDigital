@@ -11,10 +11,12 @@ public class Jogador {
 		torroes = 0;
 	}
 	
-	public void perdeCartaAleatoria() {
+	public Carta perdeCartaAleatoria() {
 		SecureRandom random = new SecureRandom();
 		int aleat = random.nextInt(cartasNaMao.size());
+		Carta perdida=cartasNaMao.get(aleat);
 		cartasNaMao.remove(aleat);
+		return perdida;
 	}
 	
 	//esse metodo verifica se o jogador possui uma carta do personagem p

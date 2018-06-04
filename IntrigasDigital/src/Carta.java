@@ -1,7 +1,10 @@
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 
 public class Carta {
 	EnumPersonagem personagem;
 	String imgFileGed, imgFilePeq;
+	Icon gedIcon, peqIcon;
 	
 	public Carta(EnumPersonagem p){
 		personagem = p;
@@ -34,6 +37,9 @@ public class Carta {
 			default:
 				System.out.println("Nani?");
 		}
+		
+		peqIcon =     new ImageIcon(getClass().getClassLoader().getResource(imgFilePeq)); 
+		gedIcon = new ImageIcon(getClass().getClassLoader().getResource(imgFileGed));
 	}
 	
 	public EnumPersonagem getPersonagem() {
@@ -58,6 +64,22 @@ public class Carta {
 
 	public void setImgFilePeq(String imgFilePeq) {
 		this.imgFilePeq = imgFilePeq;
+	}
+
+	public Icon getGedIcon() {
+		return gedIcon;
+	}
+
+	public void setGedIcon(Icon gedIcon) {
+		this.gedIcon = gedIcon;
+	}
+
+	public Icon getPeqIcon() {
+		return peqIcon;
+	}
+
+	public void setPeqIcon(Icon peqIcon) {
+		this.peqIcon = peqIcon;
 	}
 	
 	

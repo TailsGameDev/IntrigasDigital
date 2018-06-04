@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.function.Consumer;
 
@@ -19,9 +21,11 @@ public class TelaGame extends JFrame{
 	JPanel[] jogadoresPanels;
 	
 	//centro
-	JPanel bancoPanel, baralhoPanel;
+	JPanel bancoPanel, baralhoPanel, cemiterioPanel;
 	JButton bancoBtn, baralhoBtn; 
 	JTextArea console;
+	ArrayList<JLabel> cartasMortasLabels = new ArrayList<JLabel>();
+	ArrayList<Carta> cartasMortas = new ArrayList<Carta>();
 	
 	//
 	String funcaoAlvo;
@@ -31,8 +35,7 @@ public class TelaGame extends JFrame{
 	public TelaGame() {
 		super("Intrigas Digital - Game");
 		
-		nomeCartaLeft=jogadores.get(0).getCartasNaMao().get(0).getImgFileGed(); //pega o nome do arquivo lah na carta do jogador 0
-		nomeCartaRight=jogadores.get(0).getCartasNaMao().get(1).getImgFileGed();
+
 		//para fins de teste: -----------------------------------------------------------------------
 		jogadores.get(0).torroes=10000;
 		/*
@@ -55,19 +58,11 @@ public class TelaGame extends JFrame{
 		
 		leftPanel= new JPanel(new BorderLayout()); //contem uma imagem                                               //leftPanel
 			
-			Icon iconCartaLeft = new ImageIcon(getClass().getClassLoader().getResource(nomeCartaLeft));
-			cartaLeft = new JLabel(iconCartaLeft);
-			leftPanel.add(cartaLeft);
-			
-		add(leftPanel, BorderLayout.WEST);
+		exibeLeftPanel();
 		
 		rightPanel= new JPanel(new BorderLayout());//contem uma imagem                                                  //rightPanel
-		
-			Icon iconCartaright = new ImageIcon(getClass().getClassLoader().getResource(nomeCartaRight));
-			cartaRight = new JLabel(iconCartaright);
-			rightPanel.add(cartaRight);
-			
-		add(rightPanel, BorderLayout.EAST);
+
+		exibeRightPanel();
 		
 		
 		
@@ -91,11 +86,19 @@ public class TelaGame extends JFrame{
 			baralhoPanel = new JPanel(new BorderLayout());
 				Icon baralho = new ImageIcon(getClass().getResource("versinho.png"));
 				baralhoBtn = new JButton(baralho);
+				baralhoBtn.addActionListener(new ActionListener() {@Override
+					public void actionPerformed(ActionEvent arg0) {
+						Main.fluxo.btnBaralho(jogadores.get(0));
+					}
+				});
 				baralhoPanel.add(baralhoBtn);
 				
 			centerPanel.add(baralhoPanel);
 			
 			renderizaConsole("");
+			
+			cemiterioPanel = new JPanel(new FlowLayout());
+			centerPanel.add(cemiterioPanel);
 			
 		add(centerPanel, BorderLayout.CENTER);
 		
@@ -108,8 +111,8 @@ public class TelaGame extends JFrame{
 			
 			atkIndefensavelBtn.addActionListener(new ActionListener() { @Override
 				public void actionPerformed(ActionEvent e) {
-					if(jogadores.get(0)==Main.game.getJogadorDaVez()) {
-						funcaoAlvo = "atkIndefensavel";
+					if(jogadores.get(0)==Main.game.getJogadorDaVez()) { //essa verificacao estah redundante com o sistema do Fluxo e ControleJogador
+						funcaoAlvo = "atkIndefensavel"; //que tambem verifica se o jogador solicitante eh o jogadorDaVez
 						exibeAlvoBtns();
 					}
 				}
@@ -218,19 +221,24 @@ public class TelaGame extends JFrame{
 			//nao consegui usar a variavel i dentro do metodo actionPerformed, entao acabei fazendo esse switch
 			switch (i) { //a ideia eh cada botao chamar o seu respectivo jogador como alvo
 			case 1:
-alvoBtns[i].addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {indexAlvo=1;Main.fluxo.chamaMetodoComAlvo(funcaoAlvo, Main.game.getJogadores().get(1));removeAlvoBtns();}});
+alvoBtns[i].addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
+	indexAlvo=1;Main.fluxo.chamaMetodoComAlvo(funcaoAlvo, jogadores.get(0), Main.game.getJogadores().get(1));removeAlvoBtns();}});
 				break;//note que nem sempre o i eh igual ao index inicial do jogador, e soh importa o index atual dele na chamada mesmo. O botão pega pelo index atual.
 			case 2:
-alvoBtns[i].addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {indexAlvo=2;Main.fluxo.chamaMetodoComAlvo(funcaoAlvo, Main.game.getJogadores().get(2));removeAlvoBtns();}});
+alvoBtns[i].addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
+	indexAlvo=2;Main.fluxo.chamaMetodoComAlvo(funcaoAlvo, jogadores.get(0), Main.game.getJogadores().get(2));removeAlvoBtns();}});
 				break;//antes onde estah funcaoAlvo=""; estava removeAlvoBtns, mas estava bugando, entao vou deixar os alvoBtns ali mesmo
 			case 3:
-alvoBtns[i].addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {indexAlvo=3;Main.fluxo.chamaMetodoComAlvo(funcaoAlvo, Main.game.getJogadores().get(3));removeAlvoBtns();}});
+alvoBtns[i].addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
+	indexAlvo=3;Main.fluxo.chamaMetodoComAlvo(funcaoAlvo, jogadores.get(0), Main.game.getJogadores().get(3));removeAlvoBtns();}});
 				break;
 			case 4:
-alvoBtns[i].addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {indexAlvo=4;Main.fluxo.chamaMetodoComAlvo(funcaoAlvo, Main.game.getJogadores().get(4));removeAlvoBtns();}});
+alvoBtns[i].addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
+	indexAlvo=4;Main.fluxo.chamaMetodoComAlvo(funcaoAlvo, jogadores.get(0), Main.game.getJogadores().get(4));removeAlvoBtns();}});
 				break;
 			case 5:
-alvoBtns[i].addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {indexAlvo=5;Main.fluxo.chamaMetodoComAlvo(funcaoAlvo, Main.game.getJogadores().get(5));removeAlvoBtns();}});	
+alvoBtns[i].addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
+	indexAlvo=5;Main.fluxo.chamaMetodoComAlvo(funcaoAlvo, jogadores.get(0), Main.game.getJogadores().get(5));removeAlvoBtns();}});	
 				break;
 			default:
 				System.out.println("caso default atingido no botao Alvo da Tela Game");
@@ -266,6 +274,59 @@ alvoBtns[i].addActionListener(new ActionListener() {@Override public void action
 		bottomPanel.add(seusTorroesLabel);
 		validate();
 	}
+	
+	void addCartaMorta(Carta card) {
+		cartasMortasLabels.add(new JLabel(card.getPeqIcon()));
+		cemiterioPanel.add(cartasMortasLabels.get(cartasMortasLabels.size()-1));
+		//centerPanel.add(comp)
+		validate();
+		renderizaConsole("Morreu a carta " + card.getPersonagem().name());
+		//System.out.println("chamouaddCartaMorta da telaGame");
+	}
+	
+	//recarrega o leftPanel
+	public void exibeLeftPanel() {
+		remove(leftPanel);
+		leftPanel = new JPanel(new BorderLayout());
+		
+		nomeCartaLeft=jogadores.get(0).getCartasNaMao().get(0).getImgFileGed(); //pega o nome do arquivo lah na carta do jogador 0
+		
+		Icon iconCartaLeft = new ImageIcon(getClass().getClassLoader().getResource(nomeCartaLeft));
+		cartaLeft = new JLabel(iconCartaLeft);
+		cartaLeft.addMouseListener(new MouseListener() { @Override
+			public void mouseClicked(MouseEvent arg0) { System.out.println("clicou na label TelaGame.exibeLeftPanel");
+				Main.fluxo.clickCartaJogadorEsq();
+			}//para clicar numa label tive que implementar os eventos de mouse todos. Se pa era melhor fazer um button mesmo.
+			@Override public void mouseEntered(MouseEvent arg0) {} @Override public void mouseExited(MouseEvent arg0) {}
+			@Override public void mousePressed(MouseEvent arg0) {} @Override public void mouseReleased(MouseEvent arg0) {}	
+		});
+		
+		leftPanel.add(cartaLeft);
+		
+		add(leftPanel, BorderLayout.WEST);
+	}
+	
+	public void exibeRightPanel() {
+		remove(rightPanel);
+		rightPanel = new JPanel(new BorderLayout());
+		
+		nomeCartaRight=jogadores.get(0).getCartasNaMao().get(1).getImgFileGed();
+		
+		Icon iconCartaright = new ImageIcon(getClass().getClassLoader().getResource(nomeCartaRight));
+		cartaRight = new JLabel(iconCartaright);
+		cartaRight.addMouseListener(new MouseListener() { @Override
+			public void mouseClicked(MouseEvent arg0) { System.out.println("clicou na label TelaGame.exibeRightPanel");
+				Main.fluxo.clickCartaJogadorDir();
+			}//para clicar numa label tive que implementar os eventos de mouse todos. Se pa era melhor fazer um button mesmo.
+			@Override public void mouseEntered(MouseEvent arg0) {} @Override public void mouseExited(MouseEvent arg0) {}
+			@Override public void mousePressed(MouseEvent arg0) {} @Override public void mouseReleased(MouseEvent arg0) {}	
+		});
+		rightPanel.add(cartaRight);
+		
+	add(rightPanel, BorderLayout.EAST);
+	}
+	
+	
 	/*
 	public static void main (String args[]) {
 		TelaGame telaGame = new TelaGame();

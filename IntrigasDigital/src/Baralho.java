@@ -1,10 +1,16 @@
 import java.security.SecureRandom;
 import java.util.ArrayList;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+
 public class Baralho {
 	ArrayList<Carta> cartas;
+	Icon verso, versinho;
 	
 	public Baralho() {
+		versinho = new ImageIcon(getClass().getResource("versinho.png"));
+		verso = new ImageIcon(getClass().getResource("verso.png"));
 		ArrayList<Carta> cards = new ArrayList<Carta>();
 		for(int i =0; i<3 ; i++) {
 			cards.add(new Carta(EnumPersonagem.KANE));
@@ -40,4 +46,22 @@ public class Baralho {
 		
 		setCartas(embaralhadas);
 	}
+
+	public Icon getVerso() {
+		return verso;
+	}
+
+	public void setVerso(Icon verso) {
+		this.verso = verso;
+	}
+
+	public Icon getVersinho() {
+		return versinho;
+	}
+
+	public void setVersinho(Icon versinho) {
+		this.versinho = versinho;
+	}
+	
+	
 }

@@ -1,8 +1,11 @@
 import java.util.ArrayList;
 
+import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 public class Fluxo {
+	
+	boolean olhandoCartaDoBaralho = false;
 	
 	public void ativaTelaInit() {
 		Main.telaInit.setVisible(true);;
@@ -48,12 +51,42 @@ public class Fluxo {
 		
 	}
 	
-	public void chamaMetodoComAlvo(String funcao, Jogador alvo) {
+	public void btnBaralho(Jogador solicitante) {
+		if(solicitante == Main.game.getJogadorDaVez()) {
+			if(solicitante == Main.game.getJogadores().get(0)) {
+				if(!olhandoCartaDoBaralho) {
+					Main.telaGame.baralhoBtn.setIcon(Main.game.baralho.getCartas().get(0).getPeqIcon());
+					olhandoCartaDoBaralho = true;
+				} else {
+					Main.telaGame.baralhoBtn.setIcon(Main.game.baralho.getVersinho());
+					olhandoCartaDoBaralho = false;
+					Main.game.baralho.embaralhar();
+					passaVez();
+				}
+			}
+		}
+	}
+	
+	public void clickCartaJogadorEsq() {
+		if(olhandoCartaDoBaralho) { //essa booleana deve ser verdadeira soh na vez do jogador0
+			Main.controlJogador.trocarCarta(Main.game.getJogadorDaVez(), Main.game.getJogadorDaVez().getCartasNaMao().get(0));
+			olhandoCartaDoBaralho = false;
+		}
+	}
+	
+	public void clickCartaJogadorDir() {
+		if(olhandoCartaDoBaralho) { //essa booleana deve ser verdadeira soh na vez do jogador0
+			Main.controlJogador.trocarCarta(Main.game.getJogadorDaVez(), Main.game.getJogadorDaVez().getCartasNaMao().get(1));
+			olhandoCartaDoBaralho = false;
+		}
+	}
+	
+	public void chamaMetodoComAlvo(String funcao,Jogador solicitante, Jogador alvo) {
 		//System.out.println("entrou no fluxo "+funcao);
 		switch(funcao) {
 			case "atkIndefensavel":
 				//System.out.println("entrou no switch");
-				Main.controlJogador.ataqueIndefensavel(alvo);
+				Main.controlJogador.ataqueIndefensavel(solicitante, alvo);
 				break;
 			default:
 				break;
@@ -73,5 +106,15 @@ public class Fluxo {
 			Main.game.jogadorDaVez = Main.game.getJogadores().get(index+1);//e atualiza o jogadorDaVez para o proximo na lista
 		}
 	}
+
+	public boolean isOlhandoCartaDoBaralho() {
+		return olhandoCartaDoBaralho;
+	}
+
+	public void setOlhandoCartaDoBaralho(boolean olhandoCartaDoBaralho) {
+		this.olhandoCartaDoBaralho = olhandoCartaDoBaralho;
+	}
+	
+	
 	
 }
