@@ -142,6 +142,11 @@ public class TelaGame extends JFrame{
 				
 			});
 			proximoBtn = new JButton("Proximo");
+			proximoBtn.addActionListener(new ActionListener() {	@Override
+				public void actionPerformed(ActionEvent arg0) {
+					Main.fluxo.passaVez();
+				}
+			});
 			duvidaBtn = new JButton("Duvidar");
 			
 			bottomPanel.add(atkIndefensavelBtn);
@@ -294,7 +299,7 @@ alvoBtns[i].addActionListener(new ActionListener() {@Override public void action
 		Icon iconCartaLeft = new ImageIcon(getClass().getClassLoader().getResource(nomeCartaLeft));
 		cartaLeft = new JLabel(iconCartaLeft);
 		cartaLeft.addMouseListener(new MouseListener() { @Override
-			public void mouseClicked(MouseEvent arg0) { System.out.println("clicou na label TelaGame.exibeLeftPanel");
+			public void mouseClicked(MouseEvent arg0) { 
 				Main.fluxo.clickCartaJogadorEsq();
 			}//para clicar numa label tive que implementar os eventos de mouse todos. Se pa era melhor fazer um button mesmo.
 			@Override public void mouseEntered(MouseEvent arg0) {} @Override public void mouseExited(MouseEvent arg0) {}
@@ -315,7 +320,7 @@ alvoBtns[i].addActionListener(new ActionListener() {@Override public void action
 		Icon iconCartaright = new ImageIcon(getClass().getClassLoader().getResource(nomeCartaRight));
 		cartaRight = new JLabel(iconCartaright);
 		cartaRight.addMouseListener(new MouseListener() { @Override
-			public void mouseClicked(MouseEvent arg0) { System.out.println("clicou na label TelaGame.exibeRightPanel");
+			public void mouseClicked(MouseEvent arg0) { 
 				Main.fluxo.clickCartaJogadorDir();
 			}//para clicar numa label tive que implementar os eventos de mouse todos. Se pa era melhor fazer um button mesmo.
 			@Override public void mouseEntered(MouseEvent arg0) {} @Override public void mouseExited(MouseEvent arg0) {}

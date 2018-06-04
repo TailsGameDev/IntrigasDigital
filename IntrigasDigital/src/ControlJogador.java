@@ -31,6 +31,7 @@ public class ControlJogador {
 		Main.telaGame.baralhoBtn.setIcon(Main.game.getBaralho().versinho);
 		Main.telaGame.exibeLeftPanel();
 		Main.telaGame.exibeRightPanel();
+		Main.fluxo.passaVez();
 	}
 	
 	public void duvidar(ControlGame game) {
@@ -61,7 +62,7 @@ public class ControlJogador {
 	}
 	
 	void perdeTorroes(int qtdd, Jogador j) {
-		j.setTorroes(j.getTorroes()-7);
+		j.setTorroes(j.getTorroes()-qtdd);
 		Main.telaGame.exibeSeusTorroes();
 	}
 }

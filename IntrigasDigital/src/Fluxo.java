@@ -53,6 +53,9 @@ public class Fluxo {
 	
 	public void btnBaralho(Jogador solicitante) {
 		if(solicitante == Main.game.getJogadorDaVez()) {
+			
+			if(!olhandoCartaDoBaralho) Main.controlJogador.perdeTorroes(2, solicitante);
+			
 			if(solicitante == Main.game.getJogadores().get(0)) {
 				if(!olhandoCartaDoBaralho) {
 					Main.telaGame.baralhoBtn.setIcon(Main.game.baralho.getCartas().get(0).getPeqIcon());
@@ -63,7 +66,7 @@ public class Fluxo {
 					Main.game.baralho.embaralhar();
 					passaVez();
 				}
-			}
+			} //else se for Bot tem que implementar
 		}
 	}
 	
