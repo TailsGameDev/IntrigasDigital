@@ -6,16 +6,20 @@ public class Bot extends Jogador {
 		super(vnome);
 	}
 	
-	public String decideAcao() {
+	public String decideAcao() { //esse metodo eh chamado pelo metodo passaVez() da Fluxo
 		
 		SecureRandom random = new SecureRandom();
 		
-		int chave = random.nextInt(10);
+		int chave = random.nextInt(2);
 		String acao = "pegar1Torrao";
 		
 		switch(chave) {
 			default:
 				break;
+		}
+		
+		if(torroes>6) {
+			acao="ataqueIndefensavel";
 		}
 		
 		return acao;

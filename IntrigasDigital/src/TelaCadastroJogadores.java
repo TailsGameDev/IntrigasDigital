@@ -51,9 +51,9 @@ public class TelaCadastroJogadores extends JFrame{
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				setVisible(false);
 				Fluxo.btnCadastroContinuar(jogadoresTextFields); //a sua logica foi colocada na classe de controle Fluxo, ao inves de ficar aqui no limite
 				//a logica dos botoes deve ficar em metodos da classe fluxo e serem acessados a partir de Main.fluxo para condizer com o UML
-				setVisible(false);
 			}
 
 		});

@@ -21,6 +21,7 @@ public class ControlGame {
 	public void sePerdeuTira(Jogador j) {
 		if(j.getCartasNaMao().size() == 0) {
 			jogadores.remove(j);
+			Main.telaGame.renderizaTopPanel();
 		}
 	}
 

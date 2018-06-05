@@ -1,13 +1,20 @@
+import java.security.SecureRandom;
 import java.util.ArrayList;
 
 public class ControlJogador {
+	
 	public void pegar1Torrao(Jogador jogadorParaVerificar) {
 		if(jogadorParaVerificar == Main.game.getJogadorDaVez()) {
+			//System.out.println("Eh o jogador da vez");
 			int torroes = Main.game.getJogadorDaVez().getTorroes();
 			torroes+=1;
 			Main.game.getJogadorDaVez().setTorroes(torroes);
-			Main.fluxo.passaVez();
+			Main.telaGame.renderizaConsole(jogadorParaVerificar.getNome()+" pegou um torrao de acucar");
+//			System.out.println("alguem pegou um torrao");
+			if(Main.game.getJogadorDaVez()==Main.game.getJogadores().get(0)) //se nao for o 0 ele tem que clicar em proximo pra passar a vez
+				Main.fluxo.passaVez();
 		}
+		Main.telaGame.renderizaTopPanel();
 	}
 	
 	public void ataqueIndefensavel(Jogador solicitante, Jogador alvo) {
@@ -16,6 +23,7 @@ public class ControlJogador {
 			perdeTorroes(3,j);
 			mataCartaEMostraAGUI(alvo);
 			Main.fluxo.passaVez();
+			Main.telaGame.renderizaConsole(solicitante.getNome()+" mandou um Ataque Indefensavel em "+alvo.getNome()+"!");
 		}
 	}
 	
@@ -54,11 +62,30 @@ public class ControlJogador {
 		}
 	}
 	
+	public void fazAcaoDoBot(int index, String acao) {
+		SecureRandom random = new SecureRandom();
+		//System.out.println("facAcao do controlJogador chamada com acao "+acao);
+		switch(acao){
+			case "pegar1Torrao":
+				//System.out.println("entrou no switch com index "+index);
+				pegar1Torrao(Main.game.getJogadores().get(index));
+				break;
+			case "ataqueIndefensavel":
+				int i = random.nextInt(Main.game.getJogadores().size());
+				int k=0;
+				while(i==index && k<100) {
+					k++; i=random.nextInt(Main.game.getJogadores().size());
+				}
+				ataqueIndefensavel(Main.game.jogadorDaVez, Main.game.getJogadores().get(i) );
+			default: System.out.println("caso default atingido no Main.fazAcaoDoBot");
+		}
+	}
+	
 	public void mataCartaEMostraAGUI(Jogador alvo) {
 		Carta c = alvo.perdeCartaAleatoria();
 		Main.telaGame.addCartaMorta(c);
-		Main.game.sePerdeuTira(alvo);
 		Main.telaGame.removeCartaDoUltimoAlvo();
+		Main.game.sePerdeuTira(alvo);
 	}
 	
 	void perdeTorroes(int qtdd, Jogador j) {

@@ -52,7 +52,8 @@ public class TelaGame extends JFrame{
 		*/
 		//para fins de teste: -----------------------------------------------------------------------
 		
-		
+		topPanel = new JPanel(new FlowLayout());
+		add(topPanel, BorderLayout.NORTH);
 		renderizaTopPanel(); //o TopPanel eh onde ficam os bots. Foi concentrado em um metodo                          //topPanel
 		
 		
@@ -144,7 +145,7 @@ public class TelaGame extends JFrame{
 			proximoBtn = new JButton("Proximo");
 			proximoBtn.addActionListener(new ActionListener() {	@Override
 				public void actionPerformed(ActionEvent arg0) {
-					Main.fluxo.passaVez();
+					if(Main.game.getJogadorDaVez()!=jogadores.get(0)) Main.fluxo.passaVez();
 				}
 			});
 			duvidaBtn = new JButton("Duvidar");
@@ -165,6 +166,7 @@ public class TelaGame extends JFrame{
 	}
 	
 	public void renderizaTopPanel() {
+		remove(topPanel);
 		topPanel = new JPanel(new FlowLayout()); //obs jogadores eh Main.game.getJogadores();
 		
 		nomesLabel = new JLabel[jogadores.size()];//primeiro, limpa-se os vetores
@@ -220,6 +222,7 @@ public class TelaGame extends JFrame{
 	}
 	
 	public void exibeAlvoBtns() {
+		alvoBtns = new JButton[jogadores.size()];
 		for (int i = 1 ; i<jogadores.size() ; i++) { //para cada jogador ali
 			alvoBtns[i]=new JButton("Alvo");
 			
@@ -227,23 +230,23 @@ public class TelaGame extends JFrame{
 			switch (i) { //a ideia eh cada botao chamar o seu respectivo jogador como alvo
 			case 1:
 alvoBtns[i].addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
-	indexAlvo=1;Main.fluxo.chamaMetodoComAlvo(funcaoAlvo, jogadores.get(0), Main.game.getJogadores().get(1));removeAlvoBtns();}});
+	removeAlvoBtns();indexAlvo=1;Main.fluxo.chamaMetodoComAlvo(funcaoAlvo, jogadores.get(0), Main.game.getJogadores().get(1));validate();}});
 				break;//note que nem sempre o i eh igual ao index inicial do jogador, e soh importa o index atual dele na chamada mesmo. O botão pega pelo index atual.
 			case 2:
 alvoBtns[i].addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
-	indexAlvo=2;Main.fluxo.chamaMetodoComAlvo(funcaoAlvo, jogadores.get(0), Main.game.getJogadores().get(2));removeAlvoBtns();}});
+	removeAlvoBtns();indexAlvo=2;Main.fluxo.chamaMetodoComAlvo(funcaoAlvo, jogadores.get(0), Main.game.getJogadores().get(2));validate();}});
 				break;//antes onde estah funcaoAlvo=""; estava removeAlvoBtns, mas estava bugando, entao vou deixar os alvoBtns ali mesmo
 			case 3:
 alvoBtns[i].addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
-	indexAlvo=3;Main.fluxo.chamaMetodoComAlvo(funcaoAlvo, jogadores.get(0), Main.game.getJogadores().get(3));removeAlvoBtns();}});
+	removeAlvoBtns();indexAlvo=3;Main.fluxo.chamaMetodoComAlvo(funcaoAlvo, jogadores.get(0), Main.game.getJogadores().get(3));validate();}});
 				break;
 			case 4:
 alvoBtns[i].addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
-	indexAlvo=4;Main.fluxo.chamaMetodoComAlvo(funcaoAlvo, jogadores.get(0), Main.game.getJogadores().get(4));removeAlvoBtns();}});
+	removeAlvoBtns();indexAlvo=4;Main.fluxo.chamaMetodoComAlvo(funcaoAlvo, jogadores.get(0), Main.game.getJogadores().get(4));validate();}});
 				break;
 			case 5:
 alvoBtns[i].addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
-	indexAlvo=5;Main.fluxo.chamaMetodoComAlvo(funcaoAlvo, jogadores.get(0), Main.game.getJogadores().get(5));removeAlvoBtns();}});	
+	removeAlvoBtns();indexAlvo=5;Main.fluxo.chamaMetodoComAlvo(funcaoAlvo, jogadores.get(0), Main.game.getJogadores().get(5));validate();}});	
 				break;
 			default:
 				System.out.println("caso default atingido no botao Alvo da Tela Game");
@@ -255,12 +258,14 @@ alvoBtns[i].addActionListener(new ActionListener() {@Override public void action
 	}
 	
 	void removeAlvoBtns() {
-		//System.out.println(alvoBtns[1]);
+		System.out.println(alvoBtns[1]);
 		for (int i = 1 ; i<jogadores.size() ; i++) {
 			//System.out.println(jogadoresPanels[i]);
 			jogadoresPanels[i].remove(alvoBtns[i]);
+			//System.out.println(jogadoresPanels[i]);
 			//System.out.println(i);
 		}
+		alvoBtns=new JButton[jogadores.size()];
 		validate();
 	}
 	

@@ -4,12 +4,13 @@ public class Main{
 	public static ControlGame game = new ControlGame();
 	public static Fluxo fluxo= new Fluxo();
 	public static TelaInit telaInit = new TelaInit();
-	public static TelaCadastroJogadores telaCadastroJogadores = new TelaCadastroJogadores();;
+	public static ControlJogador controlJogador = new ControlJogador();
+	
+	public static TelaCadastroJogadores telaCadastroJogadores = new TelaCadastroJogadores();
 	public static TelaGame telaGame;
 	public static TelaAcaoPersonagem telaAcaoPersonagem = new TelaAcaoPersonagem();
 	public static TelaAcaoCombinada telaAcaoCombinada = new TelaAcaoCombinada();
 	public static TelaEnd telaEnd;
-	public static ControlJogador controlJogador = new ControlJogador();
 	
 	public static void main(String args[]) {
 		Main.fluxo.ativaTelaInit();
@@ -26,4 +27,5 @@ public class Main{
 	public static void criaTelaEnd() {
 		telaEnd = new TelaEnd();
 	}
+	
 }
