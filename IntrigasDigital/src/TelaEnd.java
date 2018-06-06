@@ -10,9 +10,12 @@ public class TelaEnd extends JFrame{
 	TelaEnd(){
 		super("Intrigas Digital - Fim do Jogo");
 		
-		acabouLabel= new JLabel("Fim de Jogo.");
+		setLayout(new FlowLayout());
 		
-		jogarDeNovoBtn = new JButton("Jogar novamente. Main.game.getJogadorVencedor(): " + Main.game.getJogadorVencedor().getNome());
+		acabouLabel= new JLabel("Fim de Jogo. Vencedor: "+ Main.game.getJogadorVencedor().getNome());
+		add(acabouLabel);
+		
+		jogarDeNovoBtn = new JButton("Jogar novamente.");
 		add(jogarDeNovoBtn);
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

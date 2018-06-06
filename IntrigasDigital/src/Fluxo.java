@@ -27,6 +27,8 @@ public class Fluxo {
 	public void ativaTelaAcaoCombinada() {
 		Main.telaAcaoCombinada.setVisible(true);
 	}
+	
+	
 	//quando for apertado o botao de cadastrar tem que cadastrar o jogador e os Bots
 	public static void btnCadastroContinuar(ArrayList<JTextField> jogadoresTextFields) {
 		
@@ -95,48 +97,58 @@ public class Fluxo {
 		}
 	}
 	
-	public void chamaMetodoComAlvo(String funcao,Jogador solicitante, Jogador alvo) {
-		//System.out.println("entrou no fluxo "+funcao);
+	public void chamaMetodoComAlvo(EnumTipoAcao funcao,Jogador solicitante, Jogador alvo) {
+		
 		switch(funcao) {
-			case "atkIndefensavel":
+			case ATAQUEINDEFENSAVEL:
 				//System.out.println("entrou no switch");
 				Main.controlJogador.ataqueIndefensavel(solicitante, alvo);
 				break;
 			default:
 				break;
 		}
+		
 	}
 	
 	public void passaVez() {
 		int index=0;
 		//passando a vez mesmo
-		if(Main.game.getJogadorDaVez()==Main.game.getJogadores().get(Main.game.getJogadores().size()-1)) { //se o da vez eh o ultimo da lista
-			Main.game.setJogadorDaVez(Main.game.getJogadores().get(0)); //seta a vez pro jogador zero
-			//System.out.println("eh o ultimo da lista no passavez");
-		} else { //se nao
-			index = 0;
-			for (int i=0; i< Main.game.getJogadores().size(); i++) {//descobre o index do jogadorDaVez
-				if(Main.game.jogadorDaVez == Main.game.getJogadores().get(i)) {
-					index=i;
+		if(Main.game.dizSeOJogoAcabou() == false) {
+		
+			if(Main.game.getJogadorDaVez()==Main.game.getJogadores().get(Main.game.getJogadores().size()-1)) { //se o da vez eh o ultimo da lista
+				//vai depender se o zero jah perdeu ou nao, mas a ideia eh ir pro comeco da lista
+				Jogador j = Main.game.getJogadores().get(0).getCartasNaMao().size()==0 ? Main.game.getJogadores().get(1) : Main.game.getJogadores().get(0);
+				Main.game.setJogadorDaVez(j); //seta a vez pro primeiro jogador
+			} else { //se nao
+				index = 0;
+				for (int i=0; i< Main.game.getJogadores().size(); i++) {//descobre o index do jogadorDaVez
+					if(Main.game.jogadorDaVez == Main.game.getJogadores().get(i)) {
+						index=i;
+					}
 				}
+				Main.game.jogadorDaVez = Main.game.getJogadores().get(index+1);//e atualiza o jogadorDaVez para o proximo na lista
 			}
-			Main.game.jogadorDaVez = Main.game.getJogadores().get(index+1);//e atualiza o jogadorDaVez para o proximo na lista
-			//System.out.println("jogadorDaVez atualizado para "+ Main.game.jogadorDaVez.getNome());
+			
+			//se eh bot, poe pra fazer algo
+			if(Main.game.getJogadorDaVez() instanceof Bot) {
+				//System.out.println("vez do Bot");
+				Bot bot = (Bot) Main.game.getJogadorDaVez();
+				EnumTipoAcao acao = bot.decideAcao();
+				Main.controlJogador.fazAcaoDoBot(index+1, acao); //note que eh index+1. index era o index do jogador atual antes de atualizar
+			}
+		
+		} else {
+			encerraGame();
 		}
-		
-		//se eh bot, poe pra fazer algo
-		//System.out.println("pediu pra conferir se eh vez do bot "+index);
-		//System.out.println((Main.game.getJogadorDaVez().getNome()));
-		if(Main.game.getJogadorDaVez() instanceof Bot) {
-			//System.out.println("vez do Bot");
-			Bot bot = (Bot) Main.game.getJogadorDaVez();
-			String acao = bot.decideAcao();
-			Main.controlJogador.fazAcaoDoBot(index+1, acao); //note que eh index+1. index era o index do jogador atual antes de atualizar
-		}
-		
-		
+			
 	}
-
+	
+	void encerraGame() {
+		Main.game.calculaVencedor();
+		Main.telaGame.setVisible(false);
+		Main.criaTelaEnd();
+	}
+	
 	public boolean isOlhandoCartaDoBaralho() {
 		return olhandoCartaDoBaralho;
 	}

@@ -10,24 +10,48 @@ public class ControlGame {
 	EnumTipoAcao ultimoTipoAcao;
 	Baralho baralho = new Baralho();
 	
-	public boolean checarFimDeJogo() {
+	public boolean dizSeOJogoAcabou() {
 		boolean sohTemUmPlayer = false;
+		boolean tem2MasOZeroPerdeu = false;
+		boolean oJogoAcabou = false;
 		if(jogadores.size() == 1) {
 			sohTemUmPlayer = true;
 		}
-		return sohTemUmPlayer; //acaba quando soh tem um player na mesa
+		
+		if(jogadores.size()==2) {
+			if(jogadores.get(0).getCartasNaMao().size()==0) {
+				tem2MasOZeroPerdeu = true;
+			}
+		}
+		
+		oJogoAcabou = sohTemUmPlayer || tem2MasOZeroPerdeu;
+		
+		return oJogoAcabou; //acaba quando soh tem um player na mesa
 	}
 	
-	public void sePerdeuTira(Jogador j) {
-		if(j.getCartasNaMao().size() == 0) {
+	public void calculaVencedor() {
+		if(jogadores.size() == 1) {
+			jogadorVencedor = jogadores.get(0);
+		}
+		
+		if(jogadores.size()==2) {
+			if(jogadores.get(0).getCartasNaMao().size()==0) {
+				jogadorVencedor = jogadores.get(1);
+			}
+		}
+	}
+	
+	public void sePerdeuTira(Jogador j) { //nao tira se eh o zero porque em todo o programa, o jogador nao Bot eh o zero.
+		if(j.getCartasNaMao().size() == 0 && j!=jogadores.get(0)) {
 			jogadores.remove(j);
 			Main.telaGame.renderizaTopPanel();
 		}
 	}
 
+	
+	
+	
 	//getters and setters
-	
-	
 	
 	public ArrayList<Jogador> getJogadores() {
 		return jogadores;

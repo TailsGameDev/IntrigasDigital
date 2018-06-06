@@ -10,7 +10,7 @@ public class Baralho {
 	
 	public Baralho() {
 		versinho = new ImageIcon(getClass().getResource("versinho.png"));
-		verso = new ImageIcon(getClass().getResource("verso.png"));
+		verso = new ImageIcon(getClass().getResource("versoMedio.png"));
 		ArrayList<Carta> cards = new ArrayList<Carta>();
 		for(int i =0; i<3 ; i++) {
 			cards.add(new Carta(EnumPersonagem.KANE));

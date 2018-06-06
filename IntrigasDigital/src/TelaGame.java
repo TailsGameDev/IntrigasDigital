@@ -26,9 +26,10 @@ public class TelaGame extends JFrame{
 	JTextArea console;
 	ArrayList<JLabel> cartasMortasLabels = new ArrayList<JLabel>();
 	ArrayList<Carta> cartasMortas = new ArrayList<Carta>();
+	JScrollPane scrollConsole;
 	
 	//
-	String funcaoAlvo;
+	//EnumTipoAcao funcaoAlvo;
 	JLabel seusTorroesLabel = new JLabel("vai ser atualizada pelo metodo exibeSeusTorroes");
 	int indexAlvo;
 	
@@ -38,6 +39,11 @@ public class TelaGame extends JFrame{
 
 		//para fins de teste: -----------------------------------------------------------------------
 		jogadores.get(0).torroes=10000;
+		jogadores.get(2).torroes=100;
+		for(Jogador j : jogadores) {
+			j.torroes = 100;
+			
+		}
 		/*
 		jogadores = new ArrayList<Jogador>();
 		
@@ -113,7 +119,7 @@ public class TelaGame extends JFrame{
 			atkIndefensavelBtn.addActionListener(new ActionListener() { @Override
 				public void actionPerformed(ActionEvent e) {
 					if(jogadores.get(0)==Main.game.getJogadorDaVez()) { //essa verificacao estah redundante com o sistema do Fluxo e ControleJogador
-						funcaoAlvo = "atkIndefensavel"; //que tambem verifica se o jogador solicitante eh o jogadorDaVez
+						Main.game.setUltimoTipoAcao(EnumTipoAcao.ATAQUEINDEFENSAVEL); //que tambem verifica se o jogador solicitante eh o jogadorDaVez
 						exibeAlvoBtns();
 					}
 				}
@@ -189,7 +195,7 @@ public class TelaGame extends JFrame{
 					c2Label[i]= new JLabel(verso);
 					jogadoresPanels[i].add(c2Label[i], BorderLayout.EAST);
 				} else {
-					System.out.println("viu que um jogador nao tinha duas cartas na telaGame topPanel"+c2Label[i]);
+					//System.out.println("viu que um jogador nao tinha duas cartas na telaGame topPanel"+c2Label[i]);
 				}
 				
 				torroesLabel[i] = new JLabel("Torroes: " + jogadores.get(i).getTorroes());//cria label com os torroes do jogador
@@ -210,14 +216,17 @@ public class TelaGame extends JFrame{
 		String oldText;
 		try{
 			oldText = console.getText();
+			//centerPanel.remove(scrollConsole);
 		} catch(java.lang.NullPointerException e) {
 			oldText = "Console Intrigas 2.0";
 			console = new JTextArea("",20,50);
 			console.setEditable(false);
+			scrollConsole = new JScrollPane(console);
+			scrollConsole.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		}
 		
 		console.setText(oldText + "\n"+ textToAdd);
-		centerPanel.add(console);
+		centerPanel.add(scrollConsole);
 		validate();
 	}
 	
@@ -230,23 +239,23 @@ public class TelaGame extends JFrame{
 			switch (i) { //a ideia eh cada botao chamar o seu respectivo jogador como alvo
 			case 1:
 alvoBtns[i].addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
-	removeAlvoBtns();indexAlvo=1;Main.fluxo.chamaMetodoComAlvo(funcaoAlvo, jogadores.get(0), Main.game.getJogadores().get(1));validate();}});
+	removeAlvoBtns();indexAlvo=1;Main.fluxo.chamaMetodoComAlvo(Main.game.getUltimoTipoAcao(), jogadores.get(0), Main.game.getJogadores().get(1));validate();}});
 				break;//note que nem sempre o i eh igual ao index inicial do jogador, e soh importa o index atual dele na chamada mesmo. O botão pega pelo index atual.
 			case 2:
 alvoBtns[i].addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
-	removeAlvoBtns();indexAlvo=2;Main.fluxo.chamaMetodoComAlvo(funcaoAlvo, jogadores.get(0), Main.game.getJogadores().get(2));validate();}});
+	removeAlvoBtns();indexAlvo=2;Main.fluxo.chamaMetodoComAlvo(Main.game.getUltimoTipoAcao(), jogadores.get(0), Main.game.getJogadores().get(2));validate();}});
 				break;//antes onde estah funcaoAlvo=""; estava removeAlvoBtns, mas estava bugando, entao vou deixar os alvoBtns ali mesmo
 			case 3:
 alvoBtns[i].addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
-	removeAlvoBtns();indexAlvo=3;Main.fluxo.chamaMetodoComAlvo(funcaoAlvo, jogadores.get(0), Main.game.getJogadores().get(3));validate();}});
+	removeAlvoBtns();indexAlvo=3;Main.fluxo.chamaMetodoComAlvo(Main.game.getUltimoTipoAcao(), jogadores.get(0), Main.game.getJogadores().get(3));validate();}});
 				break;
 			case 4:
 alvoBtns[i].addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
-	removeAlvoBtns();indexAlvo=4;Main.fluxo.chamaMetodoComAlvo(funcaoAlvo, jogadores.get(0), Main.game.getJogadores().get(4));validate();}});
+	removeAlvoBtns();indexAlvo=4;Main.fluxo.chamaMetodoComAlvo(Main.game.getUltimoTipoAcao(), jogadores.get(0), Main.game.getJogadores().get(4));validate();}});
 				break;
 			case 5:
 alvoBtns[i].addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
-	removeAlvoBtns();indexAlvo=5;Main.fluxo.chamaMetodoComAlvo(funcaoAlvo, jogadores.get(0), Main.game.getJogadores().get(5));validate();}});	
+	removeAlvoBtns();indexAlvo=5;Main.fluxo.chamaMetodoComAlvo(Main.game.getUltimoTipoAcao() , jogadores.get(0), Main.game.getJogadores().get(5));validate();}});	
 				break;
 			default:
 				System.out.println("caso default atingido no botao Alvo da Tela Game");
@@ -258,25 +267,13 @@ alvoBtns[i].addActionListener(new ActionListener() {@Override public void action
 	}
 	
 	void removeAlvoBtns() {
-		System.out.println(alvoBtns[1]);
 		for (int i = 1 ; i<jogadores.size() ; i++) {
-			//System.out.println(jogadoresPanels[i]);
 			jogadoresPanels[i].remove(alvoBtns[i]);
-			//System.out.println(jogadoresPanels[i]);
-			//System.out.println(i);
 		}
 		alvoBtns=new JButton[jogadores.size()];
 		validate();
 	}
 	
-	void removeCartaDoUltimoAlvo() { //esse metodo remove uma carta, caso o jogador tenha uma carta, e printa que ele devia morrer, caso tenha zero
-		if(jogadores.get(indexAlvo).getCartasNaMao().size()==1) {
-			jogadoresPanels[indexAlvo].remove(c2Label[indexAlvo]);
-		} else if (jogadores.get(indexAlvo).getCartasNaMao().size()==1) {
-			System.out.println("segundo a logica de removeCartaDoUltimoAlvo da classe TelaGame, esse jogador tah morto");
-		}
-		validate();
-	}
 	
 	void exibeSeusTorroes() {
 		bottomPanel.remove(seusTorroesLabel);
@@ -299,9 +296,14 @@ alvoBtns[i].addActionListener(new ActionListener() {@Override public void action
 		remove(leftPanel);
 		leftPanel = new JPanel(new BorderLayout());
 		
-		nomeCartaLeft=jogadores.get(0).getCartasNaMao().get(0).getImgFileGed(); //pega o nome do arquivo lah na carta do jogador 0
+		Icon iconCartaLeft;
 		
-		Icon iconCartaLeft = new ImageIcon(getClass().getClassLoader().getResource(nomeCartaLeft));
+		try {
+			nomeCartaLeft=jogadores.get(0).getCartasNaMao().get(0).getImgFileGed(); //pega o nome do arquivo lah na carta do jogador 
+			iconCartaLeft = new ImageIcon(getClass().getClassLoader().getResource(nomeCartaLeft));
+		} catch (IndexOutOfBoundsException e) {
+			iconCartaLeft = Main.game.getBaralho().getVerso();
+		}
 		cartaLeft = new JLabel(iconCartaLeft);
 		cartaLeft.addMouseListener(new MouseListener() { @Override
 			public void mouseClicked(MouseEvent arg0) { 
@@ -320,10 +322,17 @@ alvoBtns[i].addActionListener(new ActionListener() {@Override public void action
 		remove(rightPanel);
 		rightPanel = new JPanel(new BorderLayout());
 		
-		nomeCartaRight=jogadores.get(0).getCartasNaMao().get(1).getImgFileGed();
+		Icon iconCartaRight;
 		
-		Icon iconCartaright = new ImageIcon(getClass().getClassLoader().getResource(nomeCartaRight));
-		cartaRight = new JLabel(iconCartaright);
+		try {
+			nomeCartaRight=jogadores.get(0).getCartasNaMao().get(1).getImgFileGed();
+			iconCartaRight = new ImageIcon(getClass().getClassLoader().getResource(nomeCartaRight));
+		} catch (IndexOutOfBoundsException e) {
+			iconCartaRight = Main.game.getBaralho().getVerso();
+		}
+		
+		
+		cartaRight = new JLabel(iconCartaRight);
 		cartaRight.addMouseListener(new MouseListener() { @Override
 			public void mouseClicked(MouseEvent arg0) { 
 				Main.fluxo.clickCartaJogadorDir();
@@ -340,6 +349,16 @@ alvoBtns[i].addActionListener(new ActionListener() {@Override public void action
 	/*
 	public static void main (String args[]) {
 		TelaGame telaGame = new TelaGame();
+	}
+	*/
+	/*
+	void removeCartaDoUltimoAlvoBot() { //esse metodo remove uma carta, caso o jogador tenha uma carta, e printa que ele devia morrer, caso tenha zero
+		if(jogadores.get(indexAlvo).getCartasNaMao().size()==1) { //lembrando que a carta jah foi removida, soh falta atualizar a GUI
+			jogadoresPanels[indexAlvo].remove(c2Label[indexAlvo]);
+		} else if (jogadores.get(indexAlvo).getCartasNaMao().size()==1) {
+			System.out.println("segundo a logica de removeCartaDoUltimoAlvo da classe TelaGame, esse jogador tah morto");
+		}
+		validate();
 	}
 	*/
 }

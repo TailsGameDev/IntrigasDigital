@@ -6,20 +6,23 @@ public class Bot extends Jogador {
 		super(vnome);
 	}
 	
-	public String decideAcao() { //esse metodo eh chamado pelo metodo passaVez() da Fluxo
+	public EnumTipoAcao decideAcao() { //esse metodo eh chamado pelo metodo passaVez() da Fluxo
 		
 		SecureRandom random = new SecureRandom();
 		
 		int chave = random.nextInt(2);
-		String acao = "pegar1Torrao";
+		EnumTipoAcao acao = EnumTipoAcao.PEGAR1TORRAO;
 		
 		switch(chave) {
+		case 0:
+			acao=EnumTipoAcao.PEGAR1TORRAO;
+			break;
 			default:
 				break;
 		}
 		
 		if(torroes>6) {
-			acao="ataqueIndefensavel";
+			acao=EnumTipoAcao.ATAQUEINDEFENSAVEL;
 		}
 		
 		return acao;

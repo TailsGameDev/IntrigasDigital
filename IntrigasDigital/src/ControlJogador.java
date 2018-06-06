@@ -20,10 +20,11 @@ public class ControlJogador {
 	public void ataqueIndefensavel(Jogador solicitante, Jogador alvo) {
 		Jogador j = Main.game.getJogadorDaVez();
 		if(j.getTorroes()>=7 && solicitante ==j) {
-			perdeTorroes(3,j);
+			perdeTorroes(7,j);
 			mataCartaEMostraAGUI(alvo);
-			Main.fluxo.passaVez();
 			Main.telaGame.renderizaConsole(solicitante.getNome()+" mandou um Ataque Indefensavel em "+alvo.getNome()+"!");
+			if(Main.game.getJogadorDaVez()==Main.game.getJogadores().get(0)) //se nao for o 0 ele tem que clicar em proximo pra passar a vez 
+				Main.fluxo.passaVez();
 		}
 	}
 	
@@ -62,21 +63,28 @@ public class ControlJogador {
 		}
 	}
 	
-	public void fazAcaoDoBot(int index, String acao) {
+	public void fazAcaoDoBot(int index, EnumTipoAcao acao) { //index do bot na lista Main.game.jogadores
 		SecureRandom random = new SecureRandom();
 		//System.out.println("facAcao do controlJogador chamada com acao "+acao);
+		
+		//calculando alvo aleatorio caso precise
+		int i = random.nextInt(Main.game.getJogadores().size());
+		int k=0;
+		
+		//ele vai tentar ateh 100 vezes escolher alguem que nao seja ele mesmo e nem o jogador0 sem carta (ou seja, se ele jah tiver morrido)
+		while( ( i==index || (i==0 && Main.game.getJogadores().get(0).getCartasNaMao().size()==0) ) && k<100) {//isso pq nao tiro ele qd ele morre
+			k++; i=random.nextInt(Main.game.getJogadores().size());
+		}
+		Jogador alvo = Main.game.getJogadores().get(i);
+		
 		switch(acao){
-			case "pegar1Torrao":
+			case PEGAR1TORRAO:
 				//System.out.println("entrou no switch com index "+index);
 				pegar1Torrao(Main.game.getJogadores().get(index));
 				break;
-			case "ataqueIndefensavel":
-				int i = random.nextInt(Main.game.getJogadores().size());
-				int k=0;
-				while(i==index && k<100) {
-					k++; i=random.nextInt(Main.game.getJogadores().size());
-				}
-				ataqueIndefensavel(Main.game.jogadorDaVez, Main.game.getJogadores().get(i) );
+			case ATAQUEINDEFENSAVEL:
+				Main.fluxo.chamaMetodoComAlvo(EnumTipoAcao.ATAQUEINDEFENSAVEL, Main.game.jogadorDaVez, alvo);
+				break;
 			default: System.out.println("caso default atingido no Main.fazAcaoDoBot");
 		}
 	}
@@ -84,7 +92,13 @@ public class ControlJogador {
 	public void mataCartaEMostraAGUI(Jogador alvo) {
 		Carta c = alvo.perdeCartaAleatoria();
 		Main.telaGame.addCartaMorta(c);
-		Main.telaGame.removeCartaDoUltimoAlvo();
+		if(alvo instanceof Bot) {
+		Main.telaGame.renderizaTopPanel();
+			//Main.telaGame.removeCartaDoUltimoAlvoBot();
+		} else {
+			Main.telaGame.exibeRightPanel();
+			Main.telaGame.exibeLeftPanel();
+		}
 		Main.game.sePerdeuTira(alvo);
 	}
 	
