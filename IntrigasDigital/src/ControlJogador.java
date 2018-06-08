@@ -30,17 +30,18 @@ public class ControlJogador {
 	
 	//troca a carta zero do baralho com a carta c do jogador solicitante, embaralha, e reconfigura a GUI
 	public void trocarCarta(Jogador solicitante, Carta c) {
-		ArrayList<Carta> cartasDoJogador = solicitante.getCartasNaMao();
-		cartasDoJogador.add(Main.game.getBaralho().getCartas().get(0));
-		Main.game.getBaralho().getCartas().add(c);
-		Main.game.getBaralho().getCartas().remove(0);
-		cartasDoJogador.remove(c);
-		Main.fluxo.setOlhandoCartaDoBaralho(false);
-		Main.game.getBaralho().embaralhar();
-		Main.telaGame.baralhoBtn.setIcon(Main.game.getBaralho().versinho);
-		Main.telaGame.exibeLeftPanel();
+		ArrayList<Carta> cartasDoJogador = solicitante.getCartasNaMao(); //cria variavel contrndo as cartasDoJogador
+		cartasDoJogador.add(Main.game.getBaralho().getCartas().get(0)); //adiciona a carta 0 do baralho aa mao dele
+		Main.game.getBaralho().getCartas().add(c); //adiciona a carta c ao baralho
+		Main.game.getBaralho().getCartas().remove(0); //remove a carta 0 do baralho
+		cartasDoJogador.remove(c); //remove a carta c do jogador
+		Main.fluxo.setOlhandoCartaDoBaralho(false); //seta o estado do jogo para nao estah olhando carta do baralho
+		Main.game.getBaralho().embaralhar(); //embaralha
+		Main.telaGame.baralhoBtn.setIcon(Main.game.getBaralho().versinho); //faz o baralho ter o icone do versinho
+		Main.telaGame.exibeLeftPanel(); //carrega os paineis com as cartas do jogador
 		Main.telaGame.exibeRightPanel();
-		Main.fluxo.passaVez();
+		if(Main.game.getJogadorDaVez()==Main.game.getJogadores().get(0)) //se o jogador da vez eh o zero, passa a vez.
+			Main.fluxo.passaVez();
 	}
 	
 	public void duvidar(ControlGame game) {
@@ -84,6 +85,12 @@ public class ControlJogador {
 				break;
 			case ATAQUEINDEFENSAVEL:
 				Main.fluxo.chamaMetodoComAlvo(EnumTipoAcao.ATAQUEINDEFENSAVEL, Main.game.jogadorDaVez, alvo);
+				break;
+			case TROCARCARTA:
+				Main.fluxo.btnBaralho(Main.game.getJogadores().get(index)); //simula o bot clicando no btn baralho
+				int rand = random.nextInt(2); //sorteia entre trocar a carta esquerda ou a direita
+				//decide entre trocar ou nao de carta. Sempre troca a da esquerda para nao dar out of bounds e lembrando que IA nao eh o foco
+				if (rand==0) { Main.fluxo.clickCartaJogadorEsq(); } else { Main.fluxo.btnBaralho(Main.game.getJogadores().get(index)); }
 				break;
 			default: System.out.println("caso default atingido no Main.fazAcaoDoBot");
 		}

@@ -69,17 +69,27 @@ public class Fluxo {
 			
 			if(!olhandoCartaDoBaralho) Main.controlJogador.perdeTorroes(2, solicitante);
 			
-			if(solicitante == Main.game.getJogadores().get(0)) {
+			if(solicitante == Main.game.getJogadores().get(0)) { //se eh o jogador zero
 				if(!olhandoCartaDoBaralho) {
 					Main.telaGame.baralhoBtn.setIcon(Main.game.baralho.getCartas().get(0).getPeqIcon());
 					olhandoCartaDoBaralho = true;
+					Main.telaGame.renderizaConsole(Main.game.getJogadores().get(0).getNome() + " trocarah ou nao de carta");
 				} else {
 					Main.telaGame.baralhoBtn.setIcon(Main.game.baralho.getVersinho());
 					olhandoCartaDoBaralho = false;
 					Main.game.baralho.embaralhar();
 					passaVez();
 				}
-			} //else se for Bot tem que implementar
+			} else { // se eh bot
+				if(!olhandoCartaDoBaralho) {
+					Main.telaGame.renderizaConsole(solicitante.getNome() + " trocarah ou nao de carta");
+					olhandoCartaDoBaralho = true;
+				} else {
+					olhandoCartaDoBaralho = false;
+					Main.game.baralho.embaralhar();
+					passaVez();
+				}
+			}
 		}
 	}
 	
@@ -119,7 +129,7 @@ public class Fluxo {
 				//vai depender se o zero jah perdeu ou nao, mas a ideia eh ir pro comeco da lista
 				Jogador j = Main.game.getJogadores().get(0).getCartasNaMao().size()==0 ? Main.game.getJogadores().get(1) : Main.game.getJogadores().get(0);
 				Main.game.setJogadorDaVez(j); //seta a vez pro primeiro jogador
-			} else { //se nao
+			} else { //se nao  
 				index = 0;
 				for (int i=0; i< Main.game.getJogadores().size(); i++) {//descobre o index do jogadorDaVez
 					if(Main.game.jogadorDaVez == Main.game.getJogadores().get(i)) {
@@ -133,7 +143,7 @@ public class Fluxo {
 			if(Main.game.getJogadorDaVez() instanceof Bot) {
 				//System.out.println("vez do Bot");
 				Bot bot = (Bot) Main.game.getJogadorDaVez();
-				EnumTipoAcao acao = bot.decideAcao();
+				EnumTipoAcao acao = bot.decideAcao(bot.getTorroes());
 				Main.controlJogador.fazAcaoDoBot(index+1, acao); //note que eh index+1. index era o index do jogador atual antes de atualizar
 			}
 		
