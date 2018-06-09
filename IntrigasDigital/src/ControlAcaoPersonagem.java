@@ -4,6 +4,7 @@ public class ControlAcaoPersonagem {
 	//o jogador ganha 3 torroes
 	public void acaoKane(ControlGame game) {
 		game.jogadorDaVez.setTorroes(game.jogadorDaVez.getTorroes() + 3);
+		Main.fluxo.passaVez();
 	}
 	
 	//defende um ataque
@@ -12,8 +13,13 @@ public class ControlAcaoPersonagem {
 	}
 	
 	//troca de carta gratuitamente
-	public void acaoLaura() {
-		
+	public void acaoLaura(ControlGame game) {
+		game.jogadorDaVez.setTorroes(game.jogadorDaVez.getTorroes() + 2);
+		if(game.jogadorDaVez instanceof Bot) {
+			Main.controlJogador.fazAcaoDoBot(EnumTipoAcao.TROCARCARTA);
+		} else {
+			Main.fluxo.btnBaralho(game.getJogadorDaVez());
+		}
 	}
 	
 	//rouba 2 torroes de um jogador

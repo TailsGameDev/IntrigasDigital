@@ -35,8 +35,9 @@ public class TelaGame extends JFrame{
 	
 	public TelaGame() {
 		super("Intrigas Digital - Game");
+		Main.game.setUltimoTipoAcao(EnumTipoAcao.NAODUVIDAVEL);
+		Main.game.jogadorDaVez=jogadores.get(0);
 		
-
 		//para fins de teste: -----------------------------------------------------------------------
 		jogadores.get(0).torroes=10000;
 		jogadores.get(2).torroes=100;
@@ -151,10 +152,24 @@ public class TelaGame extends JFrame{
 			proximoBtn = new JButton("Proximo");
 			proximoBtn.addActionListener(new ActionListener() {	@Override
 				public void actionPerformed(ActionEvent arg0) {
-					if(Main.game.getJogadorDaVez()!=jogadores.get(0)) Main.fluxo.passaVez();
+					if(Main.game.getUltimoTipoAcao() == EnumTipoAcao.PERSONAGEM) { //se um bot usou acao personagem
+						Main.fluxo.veSeTemDuvidaEChamaAcaoPers(Main.game.getUltimoPersUsado());
+					} else if(Main.game.getJogadorDaVez()!=jogadores.get(0)) {
+						Main.fluxo.passaVez();
+					}
 				}
 			});
+			
 			duvidaBtn = new JButton("Duvidar");
+			duvidaBtn.addActionListener(new ActionListener() {	@Override
+				public void actionPerformed(ActionEvent arg0) {
+					if(Main.game.getUltimoTipoAcao() != EnumTipoAcao.NAODUVIDAVEL) {
+						Main.game.jogadorDuvidando=jogadores.get(0);
+						Main.controlJogador.duvidar(Main.game);
+						Main.fluxo.passaVez();
+					}
+				}
+			});
 			
 			bottomPanel.add(atkIndefensavelBtn);
 			bottomPanel.add(acaoPersonagemBtn);
@@ -345,7 +360,12 @@ alvoBtns[i].addActionListener(new ActionListener() {@Override public void action
 	add(rightPanel, BorderLayout.EAST);
 	}
 	
-	
+	public void renderizaQuaseTudo() {
+		renderizaTopPanel();
+		exibeLeftPanel();
+		exibeRightPanel();
+		exibeSeusTorroes();
+	}
 	/*
 	public static void main (String args[]) {
 		TelaGame telaGame = new TelaGame();

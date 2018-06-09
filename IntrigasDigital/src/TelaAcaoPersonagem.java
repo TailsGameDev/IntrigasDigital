@@ -1,4 +1,6 @@
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -14,6 +16,12 @@ public class TelaAcaoPersonagem extends JFrame{
 		arrayBtns = new ArrayList<JButton>();
 		
 		K = new JButton("K");
+		K.addActionListener(new ActionListener() {@Override
+			public void actionPerformed(ActionEvent arg0) {
+				Main.fluxo.btnAcaoPersonagem(Main.game.getJogadores().get(0), EnumPersonagem.KANE);
+				fechaEssaEAbreAGame();
+			}
+		});
 		add(K);
 		arrayBtns.add(K);
 		
@@ -22,6 +30,12 @@ public class TelaAcaoPersonagem extends JFrame{
 		arrayBtns.add(M);
 		
 		L = new JButton("L");
+		L.addActionListener(new ActionListener() {@Override
+			public void actionPerformed(ActionEvent arg0) {
+			Main.fluxo.btnAcaoPersonagem(Main.game.getJogadores().get(0), EnumPersonagem.LAURA);
+			fechaEssaEAbreAGame();
+		}
+		});
 		add(L);
 		arrayBtns.add(L);
 		
@@ -42,7 +56,8 @@ public class TelaAcaoPersonagem extends JFrame{
 		setVisible(true);
 	}
 	
-	public static void main (String args[]) {
-		TelaAcaoPersonagem telaAcaoCombinada = new TelaAcaoPersonagem();
+	void fechaEssaEAbreAGame() {
+		Main.fluxo.ativaTelaGame();
+		setVisible(false);
 	}
 }

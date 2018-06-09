@@ -28,4 +28,13 @@ public class Main{
 		telaEnd = new TelaEnd();
 	}
 	
+	public static int descobreIndexDoJogadorJ(Jogador j) {
+		int index = 0;
+		for (int i=0; i< Main.game.getJogadores().size(); i++) {
+			if(j == Main.game.getJogadores().get(i)) {
+				index=i;
+			}
+		}
+		return index;
+	}
 }

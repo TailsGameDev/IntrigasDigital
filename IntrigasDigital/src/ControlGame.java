@@ -3,12 +3,15 @@ import java.util.ArrayList;
 public class ControlGame {
 	
 	int numInicialJogadores = 3;
-	ArrayList<Jogador> jogadores = new ArrayList<Jogador>(); 
+	ArrayList<Jogador> jogadores = new ArrayList<Jogador>();
+	ArrayList<Jogador> ultimosAlvos = new ArrayList<Jogador>(); 
 	Jogador jogadorDaVez, jogadorDuvidando, jogadorDeQuemSeDuvida, jogadorVencedor;
 	EnumPersonagem ultimoPersUsado;
 	ClassAcaoComb ultimaAcaoComb;
 	EnumTipoAcao ultimoTipoAcao;
 	Baralho baralho = new Baralho();
+	int indexDoUltimoMorto;
+	Jogador ultimoJogadorMorto;
 	
 	public boolean dizSeOJogoAcabou() {
 		boolean sohTemUmPlayer = false;
@@ -43,6 +46,8 @@ public class ControlGame {
 	
 	public void sePerdeuTira(Jogador j) { //nao tira se eh o zero porque em todo o programa, o jogador nao Bot eh o zero.
 		if(j.getCartasNaMao().size() == 0 && j!=jogadores.get(0)) {
+			indexDoUltimoMorto = Main.descobreIndexDoJogadorJ(j);
+			ultimoJogadorMorto = j;
 			jogadores.remove(j);
 			Main.telaGame.renderizaTopPanel();
 		}

@@ -2,6 +2,8 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 
 public class ControlJogador {
+		ControlAcaoPersonagem controlAcaoPersonagem = new ControlAcaoPersonagem();
+		ControlAcaoComb controlAcaoComb = new ControlAcaoComb();
 	
 	public void pegar1Torrao(Jogador jogadorParaVerificar) {
 		if(jogadorParaVerificar == Main.game.getJogadorDaVez()) {
@@ -35,7 +37,7 @@ public class ControlJogador {
 		Main.game.getBaralho().getCartas().add(c); //adiciona a carta c ao baralho
 		Main.game.getBaralho().getCartas().remove(0); //remove a carta 0 do baralho
 		cartasDoJogador.remove(c); //remove a carta c do jogador
-		Main.fluxo.setOlhandoCartaDoBaralho(false); //seta o estado do jogo para nao estah olhando carta do baralho
+		//Main.fluxo.setOlhandoCartaDoBaralho(false); //seta o estado do jogo para nao estah olhando carta do baralho
 		Main.game.getBaralho().embaralhar(); //embaralha
 		Main.telaGame.baralhoBtn.setIcon(Main.game.getBaralho().versinho); //faz o baralho ter o icone do versinho
 		Main.telaGame.exibeLeftPanel(); //carrega os paineis com as cartas do jogador
@@ -44,27 +46,70 @@ public class ControlJogador {
 			Main.fluxo.passaVez();
 	}
 	
-	public void duvidar(ControlGame game) {
+	//para chamar esse metodo precisa configurar game.ultimoTipoAcao, .jogadorDeQuemSeDuvida e .jogadorDuvidando
+	public boolean duvidar(ControlGame game) {
+		Main.telaGame.renderizaConsole(game.getJogadorDuvidando().getNome()+ " duvidou!");
+		boolean ehBlefe = false;
 		if(game.ultimoTipoAcao == EnumTipoAcao.PERSONAGEM) { //se a ultima acao foi acao personagem
 			if(game.jogadorDeQuemSeDuvida.possuiPersonagem(game.ultimoPersUsado)) { //se o jogador que fez a acao tem o personagem
-				game.jogadorDuvidando.perdeCartaAleatoria();
+				Main.telaGame.renderizaConsole(game.jogadorDeQuemSeDuvida.getNome() + " possui a carta " + game.ultimoPersUsado +" entao " +game.jogadorDuvidando.getNome()+ " perde uma carta.");
+				Main.telaGame.addCartaMorta(game.jogadorDuvidando.perdeCartaAleatoria());
 				game.sePerdeuTira(game.jogadorDuvidando);
+			} else {
+				Main.telaGame.renderizaConsole(game.jogadorDeQuemSeDuvida.getNome() + " nao possui a carta " + game.ultimoPersUsado +" entao ele perde uma carta.");
+				Main.telaGame.addCartaMorta(game.jogadorDeQuemSeDuvida.perdeCartaAleatoria());
+				game.sePerdeuTira(game.jogadorDeQuemSeDuvida);
+				ehBlefe = true;
 			}
-		} else { //se nao, entao foi uma acao combinada, ae tem que
+		} else if (game.ultimoTipoAcao == EnumTipoAcao.COMBINADA){ //se nao, entao foi uma acao combinada, ae tem que
 			ArrayList<EnumPersonagem> comboPers = game.ultimaAcaoComb.getPersonagens(); //pegar os personagens da acao combinada
 				if(game.jogadorDeQuemSeDuvida.possuiPersonagens(comboPers.get(0), comboPers.get(1))){ //ver se o alvo da duvida possui eles
 					//caso possua, quem duvidou perde carta
-					game.jogadorDuvidando.perdeCartaAleatoria();
+					Main.telaGame.renderizaConsole(game.jogadorDeQuemSeDuvida.getNome()+" possui as cartas "+comboPers.get(0)+" e "
+																	+comboPers.get(1)+" entao " +game.jogadorDuvidando.getNome()+ " perde uma carta.");
+					Main.telaGame.addCartaMorta(game.jogadorDuvidando.perdeCartaAleatoria());
 					game.sePerdeuTira(game.jogadorDuvidando);
 				} else {
 					//caso nao possua, ele perde carta
-					game.jogadorDeQuemSeDuvida.perdeCartaAleatoria();
+					Main.telaGame.renderizaConsole(game.jogadorDeQuemSeDuvida.getNome()+"nao possui as cartas "+comboPers.get(0)+" e "
+																		+comboPers.get(1)+" entao ele perde uma carta.");
+					Main.telaGame.addCartaMorta(game.jogadorDeQuemSeDuvida.perdeCartaAleatoria());
 					game.sePerdeuTira(game.jogadorDeQuemSeDuvida);
+					ehBlefe = true;
 				}
 		}
+		Jogador d = game.getJogadorDeQuemSeDuvida();
+		
+		//troca as cartas do jogadorDeQuemSeDuvida por duas do baralho
+		if(d.getCartasNaMao().size()>0) {
+			//System.out.println("trocouDeCartas1");
+			Main.game.getBaralho().getCartas().add(d.getCartasNaMao().get(0));//add carta da iteracao ao baralho
+			d.getCartasNaMao().remove(0); //remove ela da mao do jogador
+			d.getCartasNaMao().add(Main.game.getBaralho().getCartas().get(0)); //dah a carta zero do baralho pro jogador
+			Main.game.getBaralho().getCartas().remove(0); //tira ela do baralho
+			Main.telaGame.renderizaConsole("Em virtude da duvida, "+game.getJogadorDeQuemSeDuvida().getNome()+" trocou de cartas");
+			Main.game.getBaralho().embaralhar();
+		}
+		
+		if(d.getCartasNaMao().size()>1) {
+			//System.out.println("trocouDeCartas2");
+			Main.game.getBaralho().getCartas().add(d.getCartasNaMao().get(0));//add carta da iteracao ao baralho
+			d.getCartasNaMao().remove(0); //remove ela da mao do jogador
+			d.getCartasNaMao().add(Main.game.getBaralho().getCartas().get(0)); //dah a carta zero do baralho pro jogador
+			Main.game.getBaralho().getCartas().remove(0); //tira ela do baralho
+		}
+
+		Main.game.getBaralho().embaralhar(); //embaralha na sequencia
+		
+		Main.telaGame.renderizaQuaseTudo();
+		Main.game.setUltimoTipoAcao(EnumTipoAcao.NAODUVIDAVEL);
+		
+		if(Main.game.dizSeOJogoAcabou()) {Main.fluxo.encerraGame();}
+		
+		return ehBlefe;
 	}
 	
-	public void fazAcaoDoBot(int index, EnumTipoAcao acao) { //index do bot na lista Main.game.jogadores
+	public void fazAcaoDoBot( EnumTipoAcao acao) { //index do bot na lista Main.game.jogadores
 		SecureRandom random = new SecureRandom();
 		//System.out.println("facAcao do controlJogador chamada com acao "+acao);
 		
@@ -73,7 +118,7 @@ public class ControlJogador {
 		int k=0;
 		
 		//ele vai tentar ateh 100 vezes escolher alguem que nao seja ele mesmo e nem o jogador0 sem carta (ou seja, se ele jah tiver morrido)
-		while( ( i==index || (i==0 && Main.game.getJogadores().get(0).getCartasNaMao().size()==0) ) && k<100) {//isso pq nao tiro ele qd ele morre
+		while( ( i==Main.descobreIndexDoJogadorJ(Main.game.jogadorDaVez) || (i==0 && Main.game.getJogadores().get(0).getCartasNaMao().size()==0) ) && k<100) {//isso pq nao tiro ele qd ele morre
 			k++; i=random.nextInt(Main.game.getJogadores().size());
 		}
 		Jogador alvo = Main.game.getJogadores().get(i);
@@ -81,19 +126,46 @@ public class ControlJogador {
 		switch(acao){
 			case PEGAR1TORRAO:
 				//System.out.println("entrou no switch com index "+index);
-				pegar1Torrao(Main.game.getJogadores().get(index));
+				pegar1Torrao(Main.game.getJogadorDaVez());
 				break;
 			case ATAQUEINDEFENSAVEL:
 				Main.fluxo.chamaMetodoComAlvo(EnumTipoAcao.ATAQUEINDEFENSAVEL, Main.game.jogadorDaVez, alvo);
 				break;
 			case TROCARCARTA:
-				Main.fluxo.btnBaralho(Main.game.getJogadores().get(index)); //simula o bot clicando no btn baralho
-				int rand = random.nextInt(2); //sorteia entre trocar a carta esquerda ou a direita
+				Main.fluxo.btnBaralho(Main.game.getJogadorDaVez()); //simula o bot clicando no btn baralho
+				int rand = random.nextInt(2);
 				//decide entre trocar ou nao de carta. Sempre troca a da esquerda para nao dar out of bounds e lembrando que IA nao eh o foco
-				if (rand==0) { Main.fluxo.clickCartaJogadorEsq(); } else { Main.fluxo.btnBaralho(Main.game.getJogadores().get(index)); }
+				if (rand==0) { Main.fluxo.clickCartaJogadorEsq(); } else { Main.fluxo.btnBaralho(Main.game.getJogadorDaVez()); }
+				//Main.fluxo.setOlhandoCartaDoBaralho(false);
+				break;
+			case PERSONAGEM:
+				Main.fluxo.btnAcaoPersonagem(Main.game.getJogadorDaVez(), Main.game.getUltimoPersUsado());
+				//acaoPersonagem(Main.game.ultimoPersUsado);
 				break;
 			default: System.out.println("caso default atingido no Main.fazAcaoDoBot");
 		}
+	}
+	
+	public void acaoPersonagem (EnumPersonagem p) {
+		switch(p) {
+		case KANE:
+			controlAcaoPersonagem.acaoKane(Main.game);
+			break;
+		case MAGNUS:
+			break;
+		case LAURA:
+			controlAcaoPersonagem.acaoLaura(Main.game);
+			break;
+		case NINETA:
+			break;
+		case JULIUS:
+			break;
+		case PISTONE:
+			break;
+		default:
+			System.out.println("Default atingido no controlJogador.acaoPersonagem");
+		}
+		//Main.fluxo.passaVez(); tem que ser lah nos metodos ou mais perdido ainda
 	}
 	
 	public void mataCartaEMostraAGUI(Jogador alvo) {
