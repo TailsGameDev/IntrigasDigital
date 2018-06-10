@@ -3,6 +3,10 @@ import java.util.ArrayList;
 public class ClassAcaoComb {
 	EnumAcaoComb acaoComb;
 	
+	public ClassAcaoComb(EnumAcaoComb vacaoComb) {
+		acaoComb = vacaoComb;
+	}
+	
 	public ArrayList<EnumPersonagem> getPersonagens(){
 		ArrayList<EnumPersonagem> personagens = new ArrayList<EnumPersonagem>();		
 		switch(acaoComb) {

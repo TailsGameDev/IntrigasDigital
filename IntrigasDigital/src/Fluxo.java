@@ -8,6 +8,7 @@ public class Fluxo {
 	
 	boolean olhandoCartaDoBaralho = false;
 	int umaDuvidaACadaQuantasJogadas = 12;
+	int umMagnusACadaQuantosAtks = 3;
 	
 	public void ativaTelaInit() {
 		Main.telaInit.setVisible(true);;
@@ -110,11 +111,26 @@ public class Fluxo {
 	}
 	
 	public void chamaMetodoComAlvo(EnumTipoAcao funcao,Jogador solicitante, Jogador alvo) {
-		
-		switch(funcao) {
+		//esse metodo eh chamado no comeco de um atk do Julius, no caso do Jogador0, mas isso pressupoe que ele nao vai fazer nada. Eh soh pra alterar o index na tela.
+		switch(funcao) { //nesse caso mencionado acima, a funcao deve valer PERSONAGEM
 			case ATAQUEINDEFENSAVEL:
 				//System.out.println("entrou no switch");
 				Main.controlJogador.ataqueIndefensavel(solicitante, alvo);
+				break;
+			case PERSONAGEM:
+				if(Main.game.ultimoPersUsado == EnumPersonagem.JULIUS) {
+					if(solicitante == Main.game.getJogadores().get(0)) { 
+						boolean usouMagnus=false;
+						//System.out.println("Sepah vai usar o magnus");
+						usouMagnus = sePahUsaMagnus();
+						if( ! usouMagnus) {
+							System.out.println("nao usou o magnus");
+							veSeTemDuvidaEChamaAcaoPers(EnumPersonagem.JULIUS);
+						}
+					} else {
+						
+					}
+				}
 				break;
 			default:
 				break;
@@ -139,6 +155,8 @@ public class Fluxo {
 				Main.game.jogadorDaVez = Main.game.getJogadores().get(index+1);//e atualiza o jogadorDaVez para o proximo na lista
 			}
 			
+			Main.telaGame.renderizaConsole(" ");//partiu pular uma linha de vez em vez
+			
 			//se eh bot, poe pra fazer algo
 			if(Main.game.getJogadorDaVez() instanceof Bot) {
 				Bot bot = (Bot) Main.game.getJogadorDaVez();
@@ -155,24 +173,61 @@ public class Fluxo {
 			
 	}
 	
+	void coreBtnAcaoPersonagem(Jogador solicitante, EnumPersonagem p) {
+		Main.telaGame.renderizaConsole(solicitante.getNome() + " declara ter e usarah x personagem " + p);
+		Main.game.setJogadorDeQuemSeDuvida(solicitante);
+		Main.game.setUltimoTipoAcao( EnumTipoAcao.PERSONAGEM );
+		//EnumPersonagem pAntigo = Main.game.getUltimoPersUsado();
+		Main.game.setUltimoPersUsado(p);
+		//System.out.println("o personagem e o "+p);
+		//System.out.println(Main.game.getUltimoPersUsado()+"eh o ultimo usado do game");
+		if(p == EnumPersonagem.JULIUS) {
+			Main.game.ultimoAtacando = Main.game.getJogadorDaVez();
+			if(solicitante instanceof Bot) {
+				Main.telaGame.indexAlvo = Main.controlJogador.calculaAlvoAleatorioCoerente();
+				Main.telaGame.renderizaConsole("E o alvo serah "+Main.game.getJogadores().get(Main.telaGame.indexAlvo).getNome() );
+				//Main.fluxo.chamaMetodoComAlvo(Main.game.getUltimoTipoAcao(), solicitante, Main.game.getJogadores().get(Main.telaGame.indexAlvo)); vai ter q continuar a exec a partir do proximoBtn
+			} else {
+				Main.telaGame.exibeAlvoBtns(); // a exe
+				//System.out.println("imprimiu alvosbtn");
+			}
+		} else { //se nao eh o julius
+			//note que se for um bot, Main.game.setUltimpTipoAcao fica como personagem. Isso eh usado no botao proximo da TelaGame
+			//System.out.println(Main.game.getJogadorDaVez().getNome()+" se eh o zero vai ver se tem duvidas");
+			if(Main.game.getJogadorDaVez()==Main.game.getJogadores().get(0) && p!= EnumPersonagem.MAGNUS) {
+				veSeTemDuvidaEChamaAcaoPers(p);
+				System.out.println("Chamou rodada de duvidas");
+			} else 
+				//a intencao do if eh ser o caso especifico do jogador0 estar usando o magnus para se defender
+				if(Main.game.getJogadorDaVez()!=Main.game.getJogadores().get(0) && solicitante == Main.game.getJogadores().get(0) && p==EnumPersonagem.MAGNUS) {
+					veSeTemDuvidaEChamaAcaoPers(p);
+					System.out.println("Chamou rodada de duvidas");
+				}
+			
+			
+		}
+		/*
+		if(solicitante == Main.game.getJogadores().get(0)) { 
+			boolean usouMagnus=false;
+			usouMagnus = sePahUsaMagnus();
+			if( ! usouMagnus) {
+				veSeTemDuvidaEChamaAcaoPers(p);
+			}
+		}*/
+	}
 	
 	//esse metodo vai ser usado pelo jogador e pelos bots para comecar a execucao de uma acao personagem.
 	public void btnAcaoPersonagem(Jogador solicitante, EnumPersonagem p) {
-		if(solicitante == Main.game.getJogadorDaVez()) {
-			Main.telaGame.renderizaConsole(solicitante.getNome() + " declara ter e usarah x personagem " + p);
-			Main.game.setJogadorDeQuemSeDuvida(solicitante);
-			Main.game.setUltimoTipoAcao( EnumTipoAcao.PERSONAGEM );
-			Main.game.setUltimoPersUsado(p);
+		if(solicitante == Main.game.getJogadorDaVez()) { //if para quando nao tem defesa
 			
-			//note que se for um bot, Main.game.setUltimpTipoAcao fica como personagem. Isso eh usado no botao proximo da TelaGame
-			if(solicitante == Main.game.getJogadores().get(0)) { 
-				veSeTemDuvidaEChamaAcaoPers(p);
-			}
-		}/*	else if(	(Main.game.getUltimoPersUsado() == EnumPersonagem.JULIUS ||
-					/*	Main.game.getUltimaAcaoComb() == EnumAcaoComb.JJ ||    //precisa implementar sistema de 2 alvos
-						Main.game.getUltimaAcaoComb() == EnumAcaoComb.KM ||
-						Main.game.getUltimaAcaoComb() == EnumAcaoComb.NJ ) && */
-					
+			coreBtnAcaoPersonagem(solicitante, p);
+		
+		}	else if(
+					//if para o MAGNUS obs: essa eh toda a implementacao referente ao magnus. A acao dele nao vai fazer nada. Soh vai trocar o Main.game.ultimoPersUsado
+						Main.game.podeUsarMagnus(solicitante, p)
+					) {
+			coreBtnAcaoPersonagem(solicitante, p);
+		}
 	}
 	
 	void veSeTemDuvidaEChamaAcaoPers(EnumPersonagem p) {
@@ -204,6 +259,25 @@ public class Fluxo {
 			}
 		}
 		return alguemDuvidou;
+	}
+	
+	public boolean sePahUsaMagnus() {
+		boolean usouMagnus = false;
+		SecureRandom random = new SecureRandom();
+		for (int i = 1; i<Main.game.getJogadores().size(); i++) {//ve de todos os jogadores
+			if(Main.game.podeUsarMagnus(Main.game.getJogadores().get(i), EnumPersonagem.MAGNUS)) { //se algum pode usar o MAGNUS
+				//System.out.println(Main.game.getJogadores().get(i).getNome() +" Pode usar o magnus");
+				int chave = random.nextInt(umMagnusACadaQuantosAtks);// e sorteia se vai usar
+				if (chave == 0) {//o indexAlvo eh subintendido para um personagem que pode usar o MAGNUS
+					btnAcaoPersonagem(Main.game.getJogadores().get(Main.telaGame.indexAlvo),EnumPersonagem.MAGNUS); //dae se pah usa
+					usouMagnus = true; //e avisa
+				}
+			}
+		}
+		if( ! usouMagnus) {
+			System.out.println("em fluxo.sePahUsaMagnus, nao usaram o magnus");
+		}
+		return usouMagnus;
 	}
 	
 	void encerraGame() {

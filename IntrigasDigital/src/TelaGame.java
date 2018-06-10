@@ -32,15 +32,18 @@ public class TelaGame extends JFrame{
 	//EnumTipoAcao funcaoAlvo;
 	JLabel seusTorroesLabel = new JLabel("vai ser atualizada pelo metodo exibeSeusTorroes");
 	int indexAlvo;
+	boolean botDecidiuSeUsaMagnus =false;
 	
 	public TelaGame() {
 		super("Intrigas Digital - Game");
-		Main.game.setUltimoTipoAcao(EnumTipoAcao.NAODUVIDAVEL);
+		Main.game.setUltimoTipoAcao(EnumTipoAcao.PEGAR1TORRAO);
 		Main.game.jogadorDaVez=jogadores.get(0);
 		
 		//para fins de teste: -----------------------------------------------------------------------
-		jogadores.get(0).torroes=10000;
-		jogadores.get(2).torroes=100;
+		/*ArrayList<Carta> c = new ArrayList<Carta>();
+		c.add(new Carta(EnumPersonagem.JULIUS));
+		c.add(new Carta(EnumPersonagem.JULIUS));
+		jogadores.get(0).setCartasNaMao(c);*/
 		for(Jogador j : jogadores) {
 			j.torroes = 100;
 			
@@ -152,8 +155,21 @@ public class TelaGame extends JFrame{
 			proximoBtn = new JButton("Proximo");
 			proximoBtn.addActionListener(new ActionListener() {	@Override
 				public void actionPerformed(ActionEvent arg0) {
-					if(Main.game.getUltimoTipoAcao() == EnumTipoAcao.PERSONAGEM) { //se um bot usou acao personagem
-						Main.fluxo.veSeTemDuvidaEChamaAcaoPers(Main.game.getUltimoPersUsado());
+				//System.out.println(Main.game.getUltimoTipoAcao() + " " + Main.game.getUltimoPersUsado());
+					if(Main.game.getUltimoTipoAcao() == EnumTipoAcao.PERSONAGEM) {
+						//se um bot usou acao personagem
+						if(Main.game.ultimoPersUsado==EnumPersonagem.JULIUS) {
+							if(botDecidiuSeUsaMagnus == false) {
+								botDecidiuSeUsaMagnus =true;
+								boolean usouMagnus=false;
+								usouMagnus = Main.fluxo.sePahUsaMagnus();
+							} else {
+								botDecidiuSeUsaMagnus = false;
+								Main.fluxo.veSeTemDuvidaEChamaAcaoPers(Main.game.getUltimoPersUsado());
+							}
+						} else {
+							Main.fluxo.veSeTemDuvidaEChamaAcaoPers(Main.game.getUltimoPersUsado());
+						}
 					} else if(Main.game.getJogadorDaVez()!=jogadores.get(0)) {
 						Main.fluxo.passaVez();
 					}

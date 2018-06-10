@@ -1,4 +1,4 @@
 
 public enum EnumAcaoComb {
-	KM, ML, LK, NJ, JJ, PP
+	KM, ML, LK, NJ, JJ, PP, NOPE
 }

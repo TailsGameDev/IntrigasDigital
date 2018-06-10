@@ -4,6 +4,7 @@ import java.util.ArrayList;
 public class ControlJogador {
 		ControlAcaoPersonagem controlAcaoPersonagem = new ControlAcaoPersonagem();
 		ControlAcaoComb controlAcaoComb = new ControlAcaoComb();
+		boolean naVddNaoEhUmIdefensavel = false;
 	
 	public void pegar1Torrao(Jogador jogadorParaVerificar) {
 		if(jogadorParaVerificar == Main.game.getJogadorDaVez()) {
@@ -24,7 +25,11 @@ public class ControlJogador {
 		if(j.getTorroes()>=7 && solicitante ==j) {
 			perdeTorroes(7,j);
 			mataCartaEMostraAGUI(alvo);
+			if(naVddNaoEhUmIdefensavel) {
+				Main.telaGame.renderizaConsole(solicitante.getNome()+" atacou "+alvo.getNome()+"!");
+			} else {
 			Main.telaGame.renderizaConsole(solicitante.getNome()+" mandou um Ataque Indefensavel em "+alvo.getNome()+"!");
+			}
 			if(Main.game.getJogadorDaVez()==Main.game.getJogadores().get(0)) //se nao for o 0 ele tem que clicar em proximo pra passar a vez 
 				Main.fluxo.passaVez();
 		}
@@ -109,11 +114,8 @@ public class ControlJogador {
 		return ehBlefe;
 	}
 	
-	public void fazAcaoDoBot( EnumTipoAcao acao) { //index do bot na lista Main.game.jogadores
+	public int calculaAlvoAleatorioCoerente() {
 		SecureRandom random = new SecureRandom();
-		//System.out.println("facAcao do controlJogador chamada com acao "+acao);
-		
-		//calculando alvo aleatorio caso precise
 		int i = random.nextInt(Main.game.getJogadores().size());
 		int k=0;
 		
@@ -121,6 +123,15 @@ public class ControlJogador {
 		while( ( i==Main.descobreIndexDoJogadorJ(Main.game.jogadorDaVez) || (i==0 && Main.game.getJogadores().get(0).getCartasNaMao().size()==0) ) && k<100) {//isso pq nao tiro ele qd ele morre
 			k++; i=random.nextInt(Main.game.getJogadores().size());
 		}
+		return i;
+	}
+	
+	public void fazAcaoDoBot( EnumTipoAcao acao) { //index do bot na lista Main.game.jogadores
+		SecureRandom random = new SecureRandom();
+		//System.out.println("facAcao do controlJogador chamada com acao "+acao);
+		
+		//calculando alvo aleatorio caso precise
+		int i = calculaAlvoAleatorioCoerente();
 		Jogador alvo = Main.game.getJogadores().get(i);
 		
 		switch(acao){
@@ -152,6 +163,7 @@ public class ControlJogador {
 			controlAcaoPersonagem.acaoKane(Main.game);
 			break;
 		case MAGNUS:
+			controlAcaoPersonagem.acaoMagnus();
 			break;
 		case LAURA:
 			controlAcaoPersonagem.acaoLaura(Main.game);
@@ -159,6 +171,7 @@ public class ControlJogador {
 		case NINETA:
 			break;
 		case JULIUS:
+			controlAcaoPersonagem.acaoJulius();
 			break;
 		case PISTONE:
 			break;

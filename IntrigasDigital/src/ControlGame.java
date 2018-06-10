@@ -4,10 +4,9 @@ public class ControlGame {
 	
 	int numInicialJogadores = 3;
 	ArrayList<Jogador> jogadores = new ArrayList<Jogador>();
-	ArrayList<Jogador> ultimosAlvos = new ArrayList<Jogador>(); 
-	Jogador jogadorDaVez, jogadorDuvidando, jogadorDeQuemSeDuvida, jogadorVencedor;
+	Jogador jogadorDaVez, jogadorDuvidando, jogadorDeQuemSeDuvida, jogadorVencedor, ultimoAtacando;
 	EnumPersonagem ultimoPersUsado;
-	ClassAcaoComb ultimaAcaoComb;
+	ClassAcaoComb ultimaAcaoComb =new ClassAcaoComb(EnumAcaoComb.NOPE);
 	EnumTipoAcao ultimoTipoAcao;
 	Baralho baralho = new Baralho();
 	int indexDoUltimoMorto;
@@ -51,6 +50,23 @@ public class ControlGame {
 			jogadores.remove(j);
 			Main.telaGame.renderizaTopPanel();
 		}
+	}
+	
+	public boolean podeUsarMagnus(Jogador solicitante, EnumPersonagem p) {
+		boolean pode=false;
+		/*System.out.println("podeUsarMagnusChamado EhJulius:"+Main.game.getUltimoPersUsado() == EnumPersonagem.JULIUS+
+				" indexAlvo: "+Main.telaGame.indexAlvo+" indexSolicitante: "+Main.descobreIndexDoJogadorJ(solicitante)+
+				);*/
+		if( (
+				Main.game.getUltimoPersUsado() == EnumPersonagem.JULIUS ||
+				Main.game.getUltimaAcaoComb().getAcaoComb() == EnumAcaoComb.JJ ||    //precisa implementar sistema de 2 alvos
+				Main.game.getUltimaAcaoComb().getAcaoComb() == EnumAcaoComb.KM ||
+				Main.game.getUltimaAcaoComb().getAcaoComb() == EnumAcaoComb.NJ ) &&
+				Main.telaGame.indexAlvo == Main.descobreIndexDoJogadorJ(solicitante) &&
+				Main.game.getJogadorDaVez()==Main.game.ultimoAtacando &&
+				p==EnumPersonagem.MAGNUS
+		){ pode = true; }
+		return pode;
 	}
 
 	

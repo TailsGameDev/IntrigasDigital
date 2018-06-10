@@ -26,6 +26,12 @@ public class TelaAcaoPersonagem extends JFrame{
 		arrayBtns.add(K);
 		
 		M = new JButton("M");
+		M.addActionListener(new ActionListener() {@Override
+			public void actionPerformed(ActionEvent arg0) {
+			Main.fluxo.btnAcaoPersonagem(Main.game.getJogadores().get(0), EnumPersonagem.MAGNUS);
+			fechaEssaEAbreAGame();
+		}
+		});
 		add(M);
 		arrayBtns.add(M);
 		
@@ -44,6 +50,12 @@ public class TelaAcaoPersonagem extends JFrame{
 		arrayBtns.add(N);
 		
 		J = new JButton("J");
+		J.addActionListener(new ActionListener() {@Override
+			public void actionPerformed(ActionEvent arg0) {
+			Main.fluxo.btnAcaoPersonagem(Main.game.getJogadores().get(0), EnumPersonagem.JULIUS);
+			fechaEssaEAbreAGame();
+		}
+		});
 		add(J);
 		arrayBtns.add(J);
 		

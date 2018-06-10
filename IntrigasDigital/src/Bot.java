@@ -51,19 +51,22 @@ public class Bot extends Jogador {
 	public EnumPersonagem decidePersonagem() {
 		EnumPersonagem p = EnumPersonagem.KANE;
 		SecureRandom random = new SecureRandom();
-		int chave = random.nextInt(2);
+		int chave = random.nextInt(3);
 		switch(chave) {
 		case 0:
 			break;
 		case 1:
 			p=EnumPersonagem.LAURA;
 			break;
+		case 2:
+			p=EnumPersonagem.JULIUS;
+			break;
 		default:
 			System.out.println("caso default atingido no Bot.decidePersonagem");	
 		}
 		
 		//teste
-		//p = EnumPersonagem.LAURA;
+		//p = EnumPersonagem.JULIUS;
 		
 		/*
 		switch (chave) {
