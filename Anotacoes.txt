@@ -1,0 +1,26 @@
+Laura:
+jogador0:
+btnAcaoPersonagem -> fluxo.veSeTemDuvidaEChamaAcaoPers -> controlJogador.acaoPersonagem -> controlAcaoPers.LAURA -> fluxo.btnBaralho
+
+Bot:
+passaVez() -> controlJogador.fazAcaoDoBot() -> configura variaveis e espera um -> DuvidarBtn ou ProximoBtn ou AcaoPersonagemBtn
+
+AcaoPersonagemBtn: ve as variaveis que foram setadas e sinaliza se houve defesa
+
+metodo do magnus tem que
+
+se usaram o julius em tu, tu pode:
+proximo: ai o julius eh usado
+duvidar: jah ta "pronto"
+usarMagnus: se a ultima acao era do julius, ou NJ, ou JJ, ou KM, e o alvo foi voce, e eh vez de quem tah te atacando
+{ tu nao sofre o ataque }
+caso contrario 
+{ tu sofre o ataque }
+
+Julius:
+BtnAcaoPersonagem -> fluxo.sePahUsaMagnus -> veSeTemDuvidaEChamaAcaoPersonagem -> controlJogador.acaoPersonagem -> controlAcaoPErsonagem.acaoJULIUS
+
+na vdd BtnAcaoPersonagem -> alvoBtn
+
+JuliusBot:
+passaVez -> faz CJ.acaoDoBot -> btnAcaoPersonagem (decide alvo)

@@ -158,17 +158,18 @@ public class TelaGame extends JFrame{
 				//System.out.println(Main.game.getUltimoTipoAcao() + " " + Main.game.getUltimoPersUsado());
 					if(Main.game.getUltimoTipoAcao() == EnumTipoAcao.PERSONAGEM) {
 						//se um bot usou acao personagem
-						if(Main.game.ultimoPersUsado==EnumPersonagem.JULIUS) {
+						EnumPersonagem p = Main.game.ultimoPersUsado;
+						if(p==EnumPersonagem.JULIUS || p == EnumPersonagem.NINETA) {
 							if(botDecidiuSeUsaMagnus == false) {
 								botDecidiuSeUsaMagnus =true;
-								boolean usouMagnus=false;
-								usouMagnus = Main.fluxo.sePahUsaMagnus();
+								boolean usouMagnus;//esse valor aparentemente nem sera usado. Mas a execucao continua no sepah...
+								usouMagnus = p==EnumPersonagem.JULIUS ? Main.fluxo.sePahUsaMagnus() : Main.fluxo.sePahUsaPistone();
 							} else {
-								botDecidiuSeUsaMagnus = false;
-								Main.fluxo.veSeTemDuvidaEChamaAcaoPers(Main.game.getUltimoPersUsado());
+								botDecidiuSeUsaMagnus = false;	//o jogadorDaVez so eh usado qd eh o Pistone o ultimo pers.
+								Main.fluxo.veSeTemDuvidaEChamaAcaoPers(Main.game.getUltimoPersUsado(), Main.game.getJogadorDaVez());
 							}
-						} else {
-							Main.fluxo.veSeTemDuvidaEChamaAcaoPers(Main.game.getUltimoPersUsado());
+						} else {	//o jogadorDaVez so eh usado qd eh o Pistone o ultimo pers.
+							Main.fluxo.veSeTemDuvidaEChamaAcaoPers(Main.game.getUltimoPersUsado(), Main.game.getJogadorDaVez());
 						}
 					} else if(Main.game.getJogadorDaVez()!=jogadores.get(0)) {
 						Main.fluxo.passaVez();

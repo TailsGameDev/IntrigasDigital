@@ -16,7 +16,7 @@ public class Bot extends Jogador {
 		int torroesNecessarios = 0;
 		EnumTipoAcao acao = EnumTipoAcao.PEGAR1TORRAO;
 		//teste
-		//chave=3;
+		chave=3;
 		
 		switch(chave) {
 		case 0:
@@ -61,12 +61,15 @@ public class Bot extends Jogador {
 		case 2:
 			p=EnumPersonagem.JULIUS;
 			break;
+		case 3:
+			p=EnumPersonagem.NINETA;
+			break;
 		default:
 			System.out.println("caso default atingido no Bot.decidePersonagem");	
 		}
 		
 		//teste
-		//p = EnumPersonagem.JULIUS;
+		p = EnumPersonagem.JULIUS;
 		
 		/*
 		switch (chave) {

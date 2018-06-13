@@ -157,7 +157,7 @@ public class ControlJogador {
 		}
 	}
 	
-	public void acaoPersonagem (EnumPersonagem p) {
+	public void acaoPersonagem (EnumPersonagem p, Jogador solicitante) {
 		switch(p) {
 		case KANE:
 			controlAcaoPersonagem.acaoKane(Main.game);
@@ -169,11 +169,13 @@ public class ControlJogador {
 			controlAcaoPersonagem.acaoLaura(Main.game);
 			break;
 		case NINETA:
+			controlAcaoPersonagem.acaoNineta();
 			break;
 		case JULIUS:
 			controlAcaoPersonagem.acaoJulius();
 			break;
 		case PISTONE:
+			controlAcaoPersonagem.acaoPistone(solicitante);
 			break;
 		default:
 			System.out.println("Default atingido no controlJogador.acaoPersonagem");

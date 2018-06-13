@@ -68,10 +68,22 @@ public class ControlGame {
 		){ pode = true; }
 		return pode;
 	}
+	
+	public boolean podeUsarPistone(Jogador solicitante, EnumPersonagem p) {
+		boolean pode=false;
+		/*System.out.println("podeUsarPistoneChamado EhJulius:"+Main.game.getUltimoPersUsado() == EnumPersonagem.NINETA+
+				" indexAlvo: "+Main.telaGame.indexAlvo+" indexSolicitante: "+Main.descobreIndexDoJogadorJ(solicitante)
+				);*/
+		if( 
+				Main.game.getUltimoPersUsado() == EnumPersonagem.NINETA &&
+				Main.telaGame.indexAlvo == Main.descobreIndexDoJogadorJ(solicitante) &&
+				Main.game.getJogadorDaVez()==Main.game.ultimoAtacando &&
+				p==EnumPersonagem.PISTONE
+		) { pode = true; }
+		return pode;
+	}
 
-	
-	
-	
+
 	//getters and setters
 	
 	public ArrayList<Jogador> getJogadores() {

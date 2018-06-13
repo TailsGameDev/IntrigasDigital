@@ -25,10 +25,13 @@ public class ControlAcaoPersonagem {
 	}
 	
 	//rouba 2 torroes de um jogador
-	public void acaoNineta(ControlGame game, Jogador alvo) {
+	public void acaoNineta() {
+		Jogador alvo = Main.game.getJogadores().get(Main.telaGame.indexAlvo);
+		ControlGame game = Main.game;
 		if(alvo.getTorroes()>=2) {
 			game.jogadorDaVez.setTorroes(game.jogadorDaVez.getTorroes()+2);
 			alvo.setTorroes(alvo.getTorroes()-2);
+			Main.fluxo.passaVez();
 		}
 	}
 	
@@ -48,7 +51,12 @@ public class ControlAcaoPersonagem {
 	}
 	
 	//olha uma carta de alguem
-	public void acaoPistone() {
-		
+	public void acaoPistone(Jogador solicitante) {
+		if(Main.game.getJogadorDaVez()==solicitante) {
+			//implementar um jogador ver a carta do outro
+		} else {
+			//estah sendo usado como defesa contra roubo
+			Main.fluxo.passaVez();
+		}
 	}
 }
