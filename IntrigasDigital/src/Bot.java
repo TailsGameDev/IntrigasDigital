@@ -42,6 +42,7 @@ public class Bot extends Jogador {
 		if (torroes<torroesNecessarios) //mae, eu sei recursao o/
 			acao = decideAcao();
 		
+		
 		if(torroes>6) {
 			acao=EnumTipoAcao.ATAQUEINDEFENSAVEL;
 		}
@@ -85,7 +86,7 @@ public class Bot extends Jogador {
 			p = decidePersonagem();
 		
 		//testeee
-		//p=EnumPersonagem.NINETA;
+		//p=EnumPersonagem.JULIUS;
 		
 		return p;
 	}

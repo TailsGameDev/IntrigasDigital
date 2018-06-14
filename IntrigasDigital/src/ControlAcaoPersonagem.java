@@ -29,8 +29,9 @@ public class ControlAcaoPersonagem {
 		Jogador alvo = Main.game.getJogadores().get(Main.telaGame.indexAlvo);
 		ControlGame game = Main.game;
 		if(alvo.getTorroes()>=2) {
-			game.jogadorDaVez.setTorroes(game.jogadorDaVez.getTorroes()+2);
-			alvo.setTorroes(alvo.getTorroes()-2);
+			Main.game.jogadorDaVez.setTorroes(game.jogadorDaVez.getTorroes()+2);
+			Main.game.getJogadores().get(Main.telaGame.indexAlvo).setTorroes(alvo.getTorroes()-2);
+			Main.telaGame.renderizaQuaseTudo();
 			Main.fluxo.passaVez();
 		}
 	}
@@ -57,6 +58,7 @@ public class ControlAcaoPersonagem {
 		//System.out.println("Chamou acaoPistone! Solicitante: "+solicitante.getNome()+" jogadorDaVez: "+Main.game.getJogadorDaVez().getNome());
 		
 		if(Main.game.getJogadorDaVez()==solicitante) {
+			Main.game.acabaramDeUsarPistoneDefendendo = false;
 			if(solicitante instanceof Bot) {
 				if(solicitante.getTorroes()>=2) {
 					//aqui vai passar a vez com o proximoBtn

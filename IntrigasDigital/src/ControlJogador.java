@@ -130,6 +130,7 @@ public class ControlJogador {
 		while( ( i==Main.descobreIndexDoJogadorJ(Main.game.jogadorDaVez) || (i==0 && Main.game.getJogadores().get(0).getCartasNaMao().size()==0) ) && k<100) {//isso pq nao tiro ele qd ele morre
 			k++; i=random.nextInt(Main.game.getJogadores().size());
 		}
+		Main.game.volatilUltimoAlvo = Main.game.getJogadores().get(i);
 		return i;
 	}
 	

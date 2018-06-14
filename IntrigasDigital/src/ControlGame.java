@@ -14,6 +14,7 @@ public class ControlGame {
 	boolean botDecidiuSeUsaDefesa =false;
 	EnumPersonagem ultimoPersAtkUsado;
 	boolean acabaramDeUsarPistoneDefendendo = false;
+	Jogador volatilUltimoAlvo;
 	
 	public boolean dizSeOJogoAcabou() {
 		boolean sohTemUmPlayer = false;

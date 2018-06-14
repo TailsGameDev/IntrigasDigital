@@ -112,6 +112,7 @@ public class Fluxo {
 	
 	public void chamaMetodoComAlvo(EnumTipoAcao funcao,Jogador solicitante, Jogador alvo) {//o comentario abaixo ta tipo muito questionavel
 		//esse metodo eh chamado no comeco de um atk do Julius, no caso do Jogador0, mas isso pressupoe que ele nao vai fazer nada. Eh soh pra alterar o index na tela.
+		Main.game.volatilUltimoAlvo = alvo;
 		switch(funcao) { //nesse caso mencionado acima, a funcao deve valer PERSONAGEM
 			case ATAQUEINDEFENSAVEL:
 				//System.out.println("entrou no switch");
@@ -249,8 +250,15 @@ public class Fluxo {
 		Main.game.setUltimoTipoAcao(EnumTipoAcao.NAODUVIDAVEL);
 		if( ! ehBlefe ) {//a acao personagem soh eh chamada se nao eh blefe ou se nao duvidaram, entao nao sera chamada caso o jogador tenha morrido por blefar
 			p=Main.game.ultimoPersUsado;
-			//System.out.println(solicitante.getNome()+"solicitou pra ver se tinha duvida");
-			Main.controlJogador.acaoPersonagem(p, solicitante);
+
+			//esses 2 ifs sao para o caso de terem usado o julius ou o pistone e o alvo tiver duvidado e morrido por isso
+			if(p == EnumPersonagem.JULIUS || p==EnumPersonagem.PISTONE) {//se ele tiver morrido nao faz sentido usar
+				if (Main.game.getJogadores().contains(Main.game.jogadorDuvidando)) { //o julius ou o pistone
+					Main.controlJogador.acaoPersonagem(p, solicitante);
+				} 
+			} else {
+				Main.controlJogador.acaoPersonagem(p, solicitante);
+			}
 
 		} else { //se eh blefe
 			//aqui normalmente se passa a vez. Mas se o ultimo tiver blefado e perdido, nao eh so passar a vez. Tem que atirar com o Julius!
@@ -260,7 +268,19 @@ public class Fluxo {
 			} else if( Main.game.ultimoPersUsado==EnumPersonagem.PISTONE && Main.game.jogadorDaVez != solicitante){
 				Main.controlJogador.acaoPersonagem(EnumPersonagem.NINETA, Main.game.jogadorDaVez);
 			} else {
-				passaVez();
+				//normalmente, jah que nao eh blefe, o jogador da vez tem que chamar acaoPersonagem
+				//mas pode acontecer de o alvo ter morrido por ter duvidado.
+				//nesse caso, o jogador tera sido removido do Array de Jogadores, e seu index apontarah para outro
+				try {
+					if(Main.game.getJogadores().get(Main.telaGame.indexAlvo) != Main.game.volatilUltimoAlvo) {
+						Main.game.volatilUltimoAlvo = null;
+						Main.controlJogador.acaoPersonagem(Main.game.ultimoPersUsado, Main.game.jogadorDaVez);
+					} else {
+						passaVez();
+					}
+				} catch (IndexOutOfBoundsException e) {
+					passaVez();
+				}
 			}
 		}
 		//normalmente tem que renderizaQuaseTudo, mas se for o Pistone sendo usado para ver a carta de um jogador, nao.

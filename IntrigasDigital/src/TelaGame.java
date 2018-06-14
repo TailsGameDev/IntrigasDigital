@@ -175,6 +175,7 @@ public class TelaGame extends JFrame{
 								Main.game.botDecidiuSeUsaDefesa =true;
 							} else {
 								botDecidiuSeUsaDefesa = false;	//o jogadorDaVez so eh usado qd eh o Pistone o ultimo pers.
+////////////////
 								Main.fluxo.veSeTemDuvidaEChamaAcaoPers(Main.game.getUltimoPersUsado(), Main.game.getJogadorDaVez());
 							}
 						} else {	//o jogadorDaVez so eh usado qd eh o Pistone o ultimo pers.
@@ -214,15 +215,34 @@ public class TelaGame extends JFrame{
 							//e se tiverem usado o Pistone quando o alvo de algo eh o jogadorDeQuemSeDuvida
 							} else if( Main.game.ultimoPersUsado==EnumPersonagem.PISTONE && Main.game.ultimoPersAtkUsado ==EnumPersonagem.NINETA
 									/*&& Main.game.jogadorDeQuemSeDuvida == jogadores.get(indexAlvo)*/){//se o cara usar o pistone de novo, ele jah vai ter que setar um novo indexAlvo
-								Main.controlJogador.acaoPersonagem(EnumPersonagem.NINETA, Main.game.jogadorDaVez);
+									Main.controlJogador.acaoPersonagem(EnumPersonagem.NINETA, Main.game.jogadorDaVez);
 								renderizaTopPanel();
 								exibeSeusTorroes();
 								} else {
-								Main.fluxo.passaVez();
+									Main.fluxo.passaVez();
 								}
 							
 						} else {
+							System.out.println("na telaGame nao eh blefe");
+							//normalmente, jah que nao eh blefe, o jogador da vez tem que chamar acaoPersonagem
+							//mas pode acontecer de o alvo ter morrido por ter duvidado.
+							//nesse caso, o jogador tera sido removido do Array de Jogadores, e seu index apontarah para outro
+							try {
+								System.out.println("Tentou e conseguiu! indexAlvo: "+ Main.telaGame.indexAlvo+" UltimoAlvo: "+Main.game.volatilUltimoAlvo.getNome());
+								if(Main.game.getJogadores().get(Main.telaGame.indexAlvo) == Main.game.volatilUltimoAlvo) {
+									System.out.println("Entrou nesse if");
+									Main.game.volatilUltimoAlvo = null;
+									Main.controlJogador.acaoPersonagem(Main.game.ultimoPersUsado, Main.game.jogadorDaVez);
+								} else {
+									//esse if eh para a situacao de usarem a nineta em alguem que morre por duvidar
+									if(Main.game.ultimoPersUsado == EnumPersonagem.NINETA) {
+										Main.game.jogadorDaVez.setTorroes(Main.game.jogadorDaVez.getTorroes()+2);
+									}
+									Main.fluxo.passaVez();
+								}
+							} catch (IndexOutOfBoundsException e) {
 								Main.fluxo.passaVez();
+							}
 						}
 						
 
