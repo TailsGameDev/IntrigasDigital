@@ -7,11 +7,11 @@ import javax.swing.JTextField;
 public class Fluxo {
 	
 	boolean olhandoCartaDoBaralho = false;
-	int umaDuvidaACadaQuantasJogadas = 6;
-	int umMagnusACadaQuantosAtks = 1;
+	int umaDuvidaACadaQuantasJogadas = 12;
+	int umMagnusACadaQuantosAtks = 3;
 	
 	public void ativaTelaInit() {
-		Main.telaInit.setVisible(true);;
+		Main.telaInit.setVisible(true);
 	}
 	
 	public void ativaTelaCadastro() {
@@ -124,7 +124,6 @@ public class Fluxo {
 						//System.out.println("Sepah vai usar o magnus");
 						usouMagnus = sePahUsaMagnus();//aqui eh verificada a vez de quem que eh e se pode usar. Por isso nao faz nada se nao deve fazer
 						if( ! usouMagnus) {
-							System.out.println("nao usou o magnus");
 							veSeTemDuvidaEChamaAcaoPers(EnumPersonagem.JULIUS, solicitante);
 						}
 					} 
@@ -136,6 +135,8 @@ public class Fluxo {
 							veSeTemDuvidaEChamaAcaoPers(EnumPersonagem.NINETA, solicitante);
 						}
 					}
+				} else if (Main.game.ultimoPersUsado == EnumPersonagem.PISTONE) { //nesse caso nao tem defesa
+					veSeTemDuvidaEChamaAcaoPers(EnumPersonagem.PISTONE, solicitante);
 				}
 				break;
 			default:
@@ -145,6 +146,7 @@ public class Fluxo {
 	}
 	
 	public void passaVez() {
+		Main.game.botDecidiuSeUsaDefesa = false;
 		int index = Main.descobreIndexDoJogadorJ(Main.game.getJogadorDaVez());
 		//passando a vez mesmo
 		if(Main.game.dizSeOJogoAcabou() == false) {
@@ -158,6 +160,7 @@ public class Fluxo {
 				Main.game.setJogadorDaVez(j); //seta a vez pro primeiro jogador
 			} else { //se nao  
 				//System.out.println("Passou a vez de "+Main.game.getJogadores().get(index).getNome()+" para "+Main.game.getJogadores().get(index+1).getNome());
+				Main.game.acabaramDeUsarPistoneDefendendo = false;
 				Main.game.jogadorDaVez = Main.game.getJogadores().get(index+1);//e atualiza o jogadorDaVez para o proximo na lista
 			}
 			
@@ -187,7 +190,12 @@ public class Fluxo {
 		Main.game.setUltimoPersUsado(p);
 		//System.out.println("o personagem e o "+p);
 		//System.out.println(Main.game.getUltimoPersUsado()+"eh o ultimo usado do game");
-		if(p == EnumPersonagem.JULIUS || p == EnumPersonagem.NINETA) {
+		
+		Jogador jogadorDaVez = Main.game.getJogadorDaVez();
+		Jogador jogadorZero = Main.game.getJogadores().get(0);
+		
+		if(p == EnumPersonagem.JULIUS || p == EnumPersonagem.NINETA || (p==EnumPersonagem.PISTONE&&solicitante==jogadorDaVez)) {
+			Main.game.ultimoPersAtkUsado = p;
 			Main.game.ultimoAtacando = Main.game.getJogadorDaVez();
 			if(solicitante instanceof Bot) {
 				Main.telaGame.indexAlvo = Main.controlJogador.calculaAlvoAleatorioCoerente();
@@ -197,32 +205,23 @@ public class Fluxo {
 				Main.telaGame.exibeAlvoBtns(); // a exe
 				//System.out.println("imprimiu alvosbtn");
 			}
-		} else { //se nao eh o julius
-			//note que se for um bot, Main.game.setUltimpTipoAcao fica como personagem. Isso eh usado no botao proximo da TelaGame
-			//System.out.println(Main.game.getJogadorDaVez().getNome()+" se eh o zero vai ver se tem duvidas");
+		} else { //se nao eh o julius nem a nineta, normalmente nao deve ser executado nada, porque o jogadorZero pode clicar em proximo ou em duvidar
+				//mas tem algumas situacoes que eh sim pra chamar a rodada de duvidas e a acaoPersonagem. Sao elas:
+			
 			boolean mOuP = p ==EnumPersonagem.MAGNUS || p==EnumPersonagem.PISTONE;
-			if(Main.game.getJogadorDaVez()==Main.game.getJogadores().get(0) && p!= EnumPersonagem.MAGNUS) {
+			
+			if( (!mOuP) && jogadorDaVez == jogadorZero) { //o jogador zero atacou alguem, e esse alguem usou defesa
 				veSeTemDuvidaEChamaAcaoPers(p, solicitante);
-				System.out.println("Chamou rodada de duvidas");
-			} else 
-				//a intencao do if eh ser o caso especifico do jogador0 estar usando o magnus para se defender
-				//ou o pistone
-				if(Main.game.getJogadorDaVez()!=Main.game.getJogadores().get(0) && solicitante == Main.game.getJogadores().get(0) && mOuP) {
-					veSeTemDuvidaEChamaAcaoPers(p, solicitante);
-					System.out.println("Chamou rodada de duvidas");
-				}
-			
-			
-		}
-		/*
-		if(solicitante == Main.game.getJogadores().get(0)) { 
-			boolean usouMagnus=false;
-			usouMagnus = sePahUsaMagnus();
-			if( ! usouMagnus) {
-				veSeTemDuvidaEChamaAcaoPers(p);
 			}
-		}*/
+			
+			if(mOuP && (jogadorDaVez != jogadorZero) && (solicitante == jogadorZero)) {//o jogadorZero foi atacado e usou um personagem para se defender
+				veSeTemDuvidaEChamaAcaoPers(p, solicitante);
+			}
+
+		}
+		
 	}
+	
 	
 	//esse metodo vai ser usado pelo jogador e pelos bots para comecar a execucao de uma acao personagem.
 	public void btnAcaoPersonagem(Jogador solicitante, EnumPersonagem p) {
@@ -241,6 +240,7 @@ public class Fluxo {
 	}
 	
 	void veSeTemDuvidaEChamaAcaoPers(EnumPersonagem p, Jogador solicitante) {
+		//System.out.println("VeSeTemDuvidas chamada");
 		boolean alguemDuvidou = rodadaDeDuvidas();
 		boolean ehBlefe = false;
 		if(alguemDuvidou) {
@@ -249,18 +249,35 @@ public class Fluxo {
 		Main.game.setUltimoTipoAcao(EnumTipoAcao.NAODUVIDAVEL);
 		if( ! ehBlefe ) {//a acao personagem soh eh chamada se nao eh blefe ou se nao duvidaram, entao nao sera chamada caso o jogador tenha morrido por blefar
 			p=Main.game.ultimoPersUsado;
+			//System.out.println(solicitante.getNome()+"solicitou pra ver se tinha duvida");
 			Main.controlJogador.acaoPersonagem(p, solicitante);
-		} else {
-			passaVez();
+
+		} else { //se eh blefe
+			//aqui normalmente se passa a vez. Mas se o ultimo tiver blefado e perdido, nao eh so passar a vez. Tem que atirar com o Julius!
+			if(Main.game.ultimoPersUsado == EnumPersonagem.MAGNUS) {
+				Main.controlJogador.acaoPersonagem(EnumPersonagem.JULIUS, Main.game.jogadorDaVez);
+			//alem disso, se o ultimo for o Pistone, e quem tiver chamado essa verSeTemDuvida nao for o jogadorDaVez (mas o cara q usou o Pistone pra se defender
+			} else if( Main.game.ultimoPersUsado==EnumPersonagem.PISTONE && Main.game.jogadorDaVez != solicitante){
+				Main.controlJogador.acaoPersonagem(EnumPersonagem.NINETA, Main.game.jogadorDaVez);
+			} else {
+				passaVez();
+			}
 		}
-		Main.telaGame.renderizaQuaseTudo();
+		//normalmente tem que renderizaQuaseTudo, mas se for o Pistone sendo usado para ver a carta de um jogador, nao.
+		if(Main.game.jogadorDaVez ==Main.game.jogadores.get(0) && Main.game.ultimoPersUsado ==EnumPersonagem.PISTONE) {
+			Main.telaGame.exibeSeusTorroes();
+		} else {
+			Main.telaGame.renderizaQuaseTudo();
+		}
 	}
 	
 	boolean rodadaDeDuvidas() { //percorre os bots, gerando um i aleatorio. Se i==0, ele vira o jogadorDuvidando
 		SecureRandom random = new SecureRandom();
 		boolean alguemDuvidou = false;
-		for (int k=1; k<Main.game.getJogadores().size(); k++) {
-			if(Main.game.getJogadores().get(k) != Main.game.getJogadorDaVez()){
+		for (int k=1; k<Main.game.getJogadores().size(); k++) {//percorre os bots
+			
+			//o jogadorDaVez nao duvida (para nao duvidar de si mesmo
+			if(Main.game.getJogadores().get(k) != Main.game.getJogadorDaVez()){//se esse bot nao eh o jogador da vez
 				int i = random.nextInt(umaDuvidaACadaQuantasJogadas);
 				if(i==0) {
 					Main.game.setJogadorDuvidando(Main.game.getJogadores().get(k));
@@ -268,16 +285,58 @@ public class Fluxo {
 				}
 			}
 		}
+		
+		
+		//mas pode ser que o jogador que fez a ultima acao personagem nao seja o jogadorDaVez.
+		// se o ultimo usado for o Magnus, o ultimoAlvo que solicitou, e ele nao deve duvidar de si mesmo
+		if(Main.game.ultimoPersUsado==EnumPersonagem.MAGNUS) {
+			Jogador ultimoAlvo = Main.game.getJogadores().get(Main.telaGame.indexAlvo);
+			alguemDuvidou = false;
+			for (int k=1; k<Main.game.getJogadores().size(); k++) {//percorre os bots
+				if(Main.game.getJogadores().get(k) != ultimoAlvo){
+					int i = random.nextInt(umaDuvidaACadaQuantasJogadas);
+					if(i==0) {
+						Main.game.setJogadorDuvidando(Main.game.getJogadores().get(k));
+						alguemDuvidou = true;
+					}
+				}
+				
+			}
+		}
+		
+		//se o ultimo usado for o Pistone, eh foda, porque tu nao sabe se quem usou foi o jogadorDaVez ou o ultimoAlvo. Como IA nao eh o foco, eu podia deixar quieto
+		//mas vou fazer ele nao duvidar nem do ultimoAlvo nem do jogadorDaVez para ficar menos pior
+		if(Main.game.ultimoPersUsado==EnumPersonagem.PISTONE) {
+			
+			Jogador ultimoAlvo = Main.game.jogadorDaVez; //conteudo da variavel provisorio.
+			try { //para tentar ser alterado logo abaixo
+				ultimoAlvo = Main.game.getJogadores().get(Main.telaGame.indexAlvo);
+			} catch (IndexOutOfBoundsException e) {
+				 ultimoAlvo = Main.game.jogadorDaVez;//Again, again, I love repetitions!
+			}
+			
+			alguemDuvidou = false;
+			for (int k=1; k<Main.game.getJogadores().size(); k++) {//percorre os bots
+				//se for diferente do alvo e do daVez, veh se ele duvida
+				if(Main.game.getJogadores().get(k) != ultimoAlvo && Main.game.getJogadores().get(k) != Main.game.getJogadorDaVez()){
+					int i = random.nextInt(umaDuvidaACadaQuantasJogadas);
+					if(i==0) {
+						Main.game.setJogadorDuvidando(Main.game.getJogadores().get(k));
+						alguemDuvidou = true;
+					}
+				}
+				
+			}
+		}
+		
 		return alguemDuvidou;
 	}
 	
 	public boolean sePahUsaMagnus() { //por algum motivo esse metodo nao eh chamado toda vez que deveria. Quando nao eh, ocorre duvida ou nao, e segue o jogo
 		boolean usouMagnus = false;
 		SecureRandom random = new SecureRandom();
-		System.out.println("se Pah usa magnus chamada");
 		for (int i = 1; i<Main.game.getJogadores().size(); i++) {//ve de todos os jogadores
 			if(Main.game.podeUsarMagnus(Main.game.getJogadores().get(i), EnumPersonagem.MAGNUS)) { //se algum pode usar o MAGNUS
-				System.out.println(Main.game.getJogadores().get(i).getNome() +" Pode usar o magnus");
 				int chave = random.nextInt(umMagnusACadaQuantosAtks);// e sorteia se vai usar
 				//chave=0;//testeeeeee
 				if (chave == 0) {//o indexAlvo eh subintendido para um personagem que pode usar o MAGNUS

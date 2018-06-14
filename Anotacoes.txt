@@ -23,4 +23,13 @@ BtnAcaoPersonagem -> fluxo.sePahUsaMagnus -> veSeTemDuvidaEChamaAcaoPersonagem -
 na vdd BtnAcaoPersonagem -> alvoBtn
 
 JuliusBot:
-passaVez -> faz CJ.acaoDoBot -> btnAcaoPersonagem (decide alvo)
+passaVez -> 
+	atualiza o jogadorDaVez, decide acao, e personagem
+	salva ultima acao e se ultima acao eh personagem, decide e salva ultimo personagem
+
+faz CJ.acaoDoBot ->
+	soh chama btnAcaoPersonagem, com o jogadorDaVez e o Julius
+ 
+btnAcaoPersonagem -> 
+	verifica se o solicitante eh o da vez, ou um alvo do pistone ou magnus. Se nao for, nao faz nada.
+	escreve ("declata ter e usar...")

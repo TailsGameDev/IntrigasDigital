@@ -11,6 +11,9 @@ public class ControlGame {
 	Baralho baralho = new Baralho();
 	int indexDoUltimoMorto;
 	Jogador ultimoJogadorMorto;
+	boolean botDecidiuSeUsaDefesa =false;
+	EnumPersonagem ultimoPersAtkUsado;
+	boolean acabaramDeUsarPistoneDefendendo = false;
 	
 	public boolean dizSeOJogoAcabou() {
 		boolean sohTemUmPlayer = false;

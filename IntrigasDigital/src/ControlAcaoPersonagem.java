@@ -38,11 +38,13 @@ public class ControlAcaoPersonagem {
 	//ataca um jogador gastando 3 torroes
 	public void acaoJulius() {
 		if(Main.game.jogadorDaVez.getTorroes()>=3) {
-			Main.game.jogadorDaVez.setTorroes(Main.game.jogadorDaVez.getTorroes()-3+7);
+
 			Main.game.ultimoTipoAcao = EnumTipoAcao.ATAQUEINDEFENSAVEL;
 			Main.controlJogador.naVddNaoEhUmIdefensavel = true;
 			try {
-			Main.fluxo.chamaMetodoComAlvo(EnumTipoAcao.ATAQUEINDEFENSAVEL, Main.game.getJogadorDaVez(), Main.game.getJogadores().get(Main.telaGame.indexAlvo));
+				Main.game.jogadorDaVez.setTorroes(Main.game.jogadorDaVez.getTorroes()-3+7);
+				//o ATKINDEFENSAVEL jah vai passar a vez. Inclusive, se o bot na sequencia usar uma atkIndefensavel, Main.controlJogador.naVddNaoEhUmIndefensavel ainda serah true
+				Main.fluxo.chamaMetodoComAlvo(EnumTipoAcao.ATAQUEINDEFENSAVEL, Main.game.getJogadorDaVez(), Main.game.getJogadores().get(Main.telaGame.indexAlvo));
 			} catch (IndexOutOfBoundsException e) {
 				System.out.println("nao deu de chamar o metodoComAlvo na controlAcaoPers.acaoJulius");
 			}
@@ -52,11 +54,26 @@ public class ControlAcaoPersonagem {
 	
 	//olha uma carta de alguem
 	public void acaoPistone(Jogador solicitante) {
+		//System.out.println("Chamou acaoPistone! Solicitante: "+solicitante.getNome()+" jogadorDaVez: "+Main.game.getJogadorDaVez().getNome());
+		
 		if(Main.game.getJogadorDaVez()==solicitante) {
-			//implementar um jogador ver a carta do outro
+			if(solicitante instanceof Bot) {
+				if(solicitante.getTorroes()>=2) {
+					//aqui vai passar a vez com o proximoBtn
+					System.out.println("O bot "+solicitante.getNome()+" veria a carta do "+Main.game.jogadores.get(Main.telaGame.indexAlvo).nome+", se isso fizesse algum sentido");
+				}
+			} else {
+				if(solicitante.getTorroes()>=2) {
+					//aqui vai passar a vez com o proximoBtn
+					Main.telaGame.exibeCartaDoJogador();
+					Main.game.ultimoTipoAcao = EnumTipoAcao.NAODUVIDAVEL;
+					Main.controlJogador.perdeTorroes(2, solicitante);
+				}
+			}
 		} else {
-			//estah sendo usado como defesa contra roubo
+			//estah sendo usado como defesa contra roubo, dai passa a vez
 			Main.fluxo.passaVez();
+			Main.game.acabaramDeUsarPistoneDefendendo = true;
 		}
 	}
 }

@@ -15,8 +15,9 @@ public class Bot extends Jogador {
 		int chave = random.nextInt(4);
 		int torroesNecessarios = 0;
 		EnumTipoAcao acao = EnumTipoAcao.PEGAR1TORRAO;
-		//teste
-		chave=3;
+		
+		//testeeee
+		//chave=3;
 		
 		switch(chave) {
 		case 0:
@@ -41,17 +42,23 @@ public class Bot extends Jogador {
 		if (torroes<torroesNecessarios) //mae, eu sei recursao o/
 			acao = decideAcao();
 		
-		/*if(torroes>6) {
+		if(torroes>6) {
 			acao=EnumTipoAcao.ATAQUEINDEFENSAVEL;
-		}*/
+		}
 		
 		return acao;
 	}
 	
 	public EnumPersonagem decidePersonagem() {
+		
+		if(torroes<0) torroes = 0;
+		int torroesNecessarios = 0;
+		
 		EnumPersonagem p = EnumPersonagem.KANE;
+		
 		SecureRandom random = new SecureRandom();
-		int chave = random.nextInt(3);
+		int chave = random.nextInt(5);
+		
 		switch(chave) {
 		case 0:
 			break;
@@ -60,39 +67,26 @@ public class Bot extends Jogador {
 			break;
 		case 2:
 			p=EnumPersonagem.JULIUS;
-			break;
-		case 3:
-			p=EnumPersonagem.NINETA;
-			break;
-		default:
-			System.out.println("caso default atingido no Bot.decidePersonagem");	
-		}
-		
-		//teste
-		p = EnumPersonagem.JULIUS;
-		
-		/*
-		switch (chave) {
-		case 0:
-			break;
-		case 1:
-			p=EnumPersonagem.MAGNUS;
-			break;
-		case 2:
-			p=EnumPersonagem.LAURA;
+			torroesNecessarios = 3;
 			break;
 		case 3:
 			p=EnumPersonagem.NINETA;
 			break;
 		case 4:
-			p=EnumPersonagem.JULIUS;
-			break;
-		case 5:
 			p=EnumPersonagem.PISTONE;
+			torroesNecessarios = 2;
 			break;
 		default:
 			System.out.println("caso default atingido no Bot.decidePersonagem");	
-		} */
+		}
+		
+		//se nao os torroes nao sao suficientes, chama esse metodo de novo ateh serem.
+		if (torroes<torroesNecessarios) //mae, eu sei recursao o/
+			p = decidePersonagem();
+		
+		//testeee
+		//p=EnumPersonagem.NINETA;
+		
 		return p;
 	}
 }

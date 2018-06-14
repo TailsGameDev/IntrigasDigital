@@ -32,7 +32,6 @@ public class TelaGame extends JFrame{
 	//EnumTipoAcao funcaoAlvo;
 	JLabel seusTorroesLabel = new JLabel("vai ser atualizada pelo metodo exibeSeusTorroes");
 	int indexAlvo;
-	boolean botDecidiuSeUsaMagnus =false;
 	
 	public TelaGame() {
 		super("Intrigas Digital - Game");
@@ -42,12 +41,11 @@ public class TelaGame extends JFrame{
 		//para fins de teste: -----------------------------------------------------------------------
 		/*ArrayList<Carta> c = new ArrayList<Carta>();
 		c.add(new Carta(EnumPersonagem.JULIUS));
-		c.add(new Carta(EnumPersonagem.JULIUS));
-		jogadores.get(0).setCartasNaMao(c);*/
+		c.add(new Carta(EnumPersonagem.NINETA));
+		jogadores.get(0).setCartasNaMao(c);
 		for(Jogador j : jogadores) {
 			j.torroes = 100;
-			
-		}
+		}*/
 		/*
 		jogadores = new ArrayList<Jogador>();
 		
@@ -155,25 +153,47 @@ public class TelaGame extends JFrame{
 			proximoBtn = new JButton("Proximo");
 			proximoBtn.addActionListener(new ActionListener() {	@Override
 				public void actionPerformed(ActionEvent arg0) {
-				//System.out.println(Main.game.getUltimoTipoAcao() + " " + Main.game.getUltimoPersUsado());
+				
+					if(Main.game.acabaramDeUsarPistoneDefendendo && Main.game.jogadorDaVez == jogadores.get(0)) {
+						return;//situacoes desesperadas pedem medidas desesperadas
+					}
+				
+					boolean botDecidiuSeUsaDefesa = Main.game.botDecidiuSeUsaDefesa;
+					//System.out.println(Main.game.getUltimoTipoAcao() + " " + Main.game.getUltimoPersUsado());
 					if(Main.game.getUltimoTipoAcao() == EnumTipoAcao.PERSONAGEM) {
 						//se um bot usou acao personagem
 						EnumPersonagem p = Main.game.ultimoPersUsado;
+						Jogador ultimoAlvo = jogadores.get(indexAlvo);
+						Jogador jogadorZero = jogadores.get(0);
 						if(p==EnumPersonagem.JULIUS || p == EnumPersonagem.NINETA) {
-							if(botDecidiuSeUsaMagnus == false) {
-								botDecidiuSeUsaMagnus =true;
-								boolean usouMagnus;//esse valor aparentemente nem sera usado. Mas a execucao continua no sepah...
-								usouMagnus = p==EnumPersonagem.JULIUS ? Main.fluxo.sePahUsaMagnus() : Main.fluxo.sePahUsaPistone();
+							if(ultimoAlvo == jogadorZero) {//se o alvo foi atacado e nao fez nada, toma o ataque
+								Main.fluxo.veSeTemDuvidaEChamaAcaoPers(Main.game.getUltimoPersUsado(), Main.game.getJogadorDaVez());
+							} else 
+							if(botDecidiuSeUsaDefesa == false) {
+								boolean usouDefesa;//esse valor aparentemente nem sera usado. Mas a execucao continua no sepah...
+								usouDefesa = p==EnumPersonagem.JULIUS ? Main.fluxo.sePahUsaMagnus() : Main.fluxo.sePahUsaPistone();
+								Main.game.botDecidiuSeUsaDefesa =true;
 							} else {
-								botDecidiuSeUsaMagnus = false;	//o jogadorDaVez so eh usado qd eh o Pistone o ultimo pers.
+								botDecidiuSeUsaDefesa = false;	//o jogadorDaVez so eh usado qd eh o Pistone o ultimo pers.
 								Main.fluxo.veSeTemDuvidaEChamaAcaoPers(Main.game.getUltimoPersUsado(), Main.game.getJogadorDaVez());
 							}
 						} else {	//o jogadorDaVez so eh usado qd eh o Pistone o ultimo pers.
-							Main.fluxo.veSeTemDuvidaEChamaAcaoPers(Main.game.getUltimoPersUsado(), Main.game.getJogadorDaVez());
+							if(p==EnumPersonagem.PISTONE && Main.game.ultimoPersAtkUsado == EnumPersonagem.NINETA) {//se for o pistone eh importante dizer que quem chama o pistone eh o alvo, nao o jogadorDaVez
+								Main.fluxo.veSeTemDuvidaEChamaAcaoPers(Main.game.getUltimoPersUsado(), ultimoAlvo);
+							} else if(p==EnumPersonagem.PISTONE && Main.game.ultimoPersAtkUsado == EnumPersonagem.PISTONE){
+								if(Main.game.getJogadorDaVez() != jogadores.get(0))
+									Main.fluxo.passaVez();
+							} else	{
+								Main.fluxo.veSeTemDuvidaEChamaAcaoPers(Main.game.getUltimoPersUsado(), Main.game.getJogadorDaVez());
+							}
 						}
 					} else if(Main.game.getJogadorDaVez()!=jogadores.get(0)) {
 						Main.fluxo.passaVez();
-					}
+					//a seguinte disposicao eh meio absurda. Eh uma tentativa de reconhecer que o ultimo pers usado foi o PISTONE, como defesa. veja ControlAcaoPersonagem.acaoPistone 
+					} else if(Main.game.getUltimoPersUsado() == EnumPersonagem.PISTONE && Main.game.ultimoTipoAcao == EnumTipoAcao.NAODUVIDAVEL) {
+						Main.game.ultimoPersUsado = EnumPersonagem.KANE; //mudando pra nao acontecer de dar proximo caso passe a proxima rodada sem usarem personagem nenhum
+						Main.fluxo.passaVez();
+					} 
 				}
 			});
 			
@@ -182,8 +202,30 @@ public class TelaGame extends JFrame{
 				public void actionPerformed(ActionEvent arg0) {
 					if(Main.game.getUltimoTipoAcao() != EnumTipoAcao.NAODUVIDAVEL) {
 						Main.game.jogadorDuvidando=jogadores.get(0);
-						Main.controlJogador.duvidar(Main.game);
-						Main.fluxo.passaVez();
+						boolean ehBlefe=false;
+						ehBlefe = Main.controlJogador.duvidar(Main.game);
+						
+						//aqui normalmente tem que passar a vez, pois o jogador0 duvidou de alguem
+						if(ehBlefe) {//mas se for blefe
+							//e ele estiver duvidando de alguem que usou o Mangus
+							if(Main.game.ultimoPersUsado == EnumPersonagem.MAGNUS) {
+								//o julius ainda tem que dar um tiro, alem do blefador perder uma carta por ter se dado mal no blefe
+								Main.controlJogador.acaoPersonagem(EnumPersonagem.JULIUS, Main.game.jogadorDaVez);
+							//e se tiverem usado o Pistone quando o alvo de algo eh o jogadorDeQuemSeDuvida
+							} else if( Main.game.ultimoPersUsado==EnumPersonagem.PISTONE && Main.game.ultimoPersAtkUsado ==EnumPersonagem.NINETA
+									/*&& Main.game.jogadorDeQuemSeDuvida == jogadores.get(indexAlvo)*/){//se o cara usar o pistone de novo, ele jah vai ter que setar um novo indexAlvo
+								Main.controlJogador.acaoPersonagem(EnumPersonagem.NINETA, Main.game.jogadorDaVez);
+								renderizaTopPanel();
+								exibeSeusTorroes();
+								} else {
+								Main.fluxo.passaVez();
+								}
+							
+						} else {
+								Main.fluxo.passaVez();
+						}
+						
+
 					}
 				}
 			});
@@ -243,6 +285,27 @@ public class TelaGame extends JFrame{
 		validate(); //renderiza
 	}
 	
+	public void exibeCartaDoJogador() {
+		try {
+			int i = indexAlvo;
+			Icon verso = new ImageIcon(getClass().getClassLoader().getResource("versinho.png")); //importa uma imagem de verso de carta
+			Icon cartinha =jogadores.get(i).getCartasNaMao().get(0).getPeqIcon();
+			
+			jogadoresPanels[i].remove(c1Label[i]);
+			c1Label[i] = new JLabel(cartinha);
+			jogadoresPanels[i].add(c1Label[i]);//adiciona as labels no painel
+			
+			if(jogadores.get(i).getCartasNaMao().size()>1) {
+				jogadoresPanels[i].remove(c2Label[i]);
+				c2Label[i]= new JLabel(verso);
+				jogadoresPanels[i].add(c2Label[i], BorderLayout.EAST);
+			}
+			validate();
+		} catch (IndexOutOfBoundsException e) {
+			//seria o caso do jogador atacado pelo Pistone ter duvidado e morrido, aae eh soh nao fazer nada mesmo
+		}
+	}
+	
 	public void renderizaConsole(String textToAdd) {
 		
 		String oldText;
@@ -271,23 +334,23 @@ public class TelaGame extends JFrame{
 			switch (i) { //a ideia eh cada botao chamar o seu respectivo jogador como alvo
 			case 1:
 alvoBtns[i].addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
-	removeAlvoBtns();indexAlvo=1;Main.fluxo.chamaMetodoComAlvo(Main.game.getUltimoTipoAcao(), jogadores.get(0), Main.game.getJogadores().get(1));validate();}});
+	removeAlvoBtns();indexAlvo=1;Main.fluxo.chamaMetodoComAlvo(Main.game.getUltimoTipoAcao(), jogadores.get(0), jogadores.get(1));validate();}});
 				break;//note que nem sempre o i eh igual ao index inicial do jogador, e soh importa o index atual dele na chamada mesmo. O botão pega pelo index atual.
 			case 2:
 alvoBtns[i].addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
-	removeAlvoBtns();indexAlvo=2;Main.fluxo.chamaMetodoComAlvo(Main.game.getUltimoTipoAcao(), jogadores.get(0), Main.game.getJogadores().get(2));validate();}});
+	removeAlvoBtns();indexAlvo=2;Main.fluxo.chamaMetodoComAlvo(Main.game.getUltimoTipoAcao(), jogadores.get(0), jogadores.get(2));validate();}});
 				break;//antes onde estah funcaoAlvo=""; estava removeAlvoBtns, mas estava bugando, entao vou deixar os alvoBtns ali mesmo
 			case 3:
 alvoBtns[i].addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
-	removeAlvoBtns();indexAlvo=3;Main.fluxo.chamaMetodoComAlvo(Main.game.getUltimoTipoAcao(), jogadores.get(0), Main.game.getJogadores().get(3));validate();}});
+	removeAlvoBtns();indexAlvo=3;Main.fluxo.chamaMetodoComAlvo(Main.game.getUltimoTipoAcao(), jogadores.get(0), jogadores.get(3));validate();}});
 				break;
 			case 4:
 alvoBtns[i].addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
-	removeAlvoBtns();indexAlvo=4;Main.fluxo.chamaMetodoComAlvo(Main.game.getUltimoTipoAcao(), jogadores.get(0), Main.game.getJogadores().get(4));validate();}});
+	removeAlvoBtns();indexAlvo=4;Main.fluxo.chamaMetodoComAlvo(Main.game.getUltimoTipoAcao(), jogadores.get(0), jogadores.get(4));validate();}});
 				break;
 			case 5:
 alvoBtns[i].addActionListener(new ActionListener() {@Override public void actionPerformed(ActionEvent e) {
-	removeAlvoBtns();indexAlvo=5;Main.fluxo.chamaMetodoComAlvo(Main.game.getUltimoTipoAcao() , jogadores.get(0), Main.game.getJogadores().get(5));validate();}});	
+	removeAlvoBtns();indexAlvo=5;Main.fluxo.chamaMetodoComAlvo(Main.game.getUltimoTipoAcao() , jogadores.get(0), jogadores.get(5));validate();}});	
 				break;
 			default:
 				System.out.println("caso default atingido no botao Alvo da Tela Game");
