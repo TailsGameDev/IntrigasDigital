@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-public class Fluxo {
+public class Fluxo implements interfaceFluxo{
 	
 	boolean olhandoCartaDoBaralho = false;
 	int umaDuvidaACadaQuantasJogadas = 12;
@@ -127,6 +127,7 @@ public class Fluxo {
 						if( ! usouMagnus) {
 							veSeTemDuvidaEChamaAcaoPers(EnumPersonagem.JULIUS, solicitante);
 						}
+						
 					} 
 				} else if (Main.game.ultimoPersUsado==EnumPersonagem.NINETA){
 					if(solicitante == Main.game.getJogadores().get(0)) {
@@ -161,9 +162,11 @@ public class Fluxo {
 				Main.game.setJogadorDaVez(j); //seta a vez pro primeiro jogador
 			} else { //se nao  
 				//System.out.println("Passou a vez de "+Main.game.getJogadores().get(index).getNome()+" para "+Main.game.getJogadores().get(index+1).getNome());
-				Main.game.acabaramDeUsarPistoneDefendendo = false;
 				Main.game.jogadorDaVez = Main.game.getJogadores().get(index+1);//e atualiza o jogadorDaVez para o proximo na lista
 			}
+			
+			if( ! (Main.game.getJogadorDaVez() instanceof Bot))//esse if eh para tratar o bug de o pistone defendendo fazer o proximoBtn funcionar na vez do jogador0
+				Main.game.acabaramDeUsarPistoneDefendendo = false; //nao eh pra funcionar pq ele deve fazer uma acao, nao passar a vez
 			
 			Main.telaGame.renderizaConsole(" ");//partiu pular uma linha de vez em vez
 			
@@ -183,7 +186,7 @@ public class Fluxo {
 			
 	}
 	
-	void coreBtnAcaoPersonagem(Jogador solicitante, EnumPersonagem p) {
+	public void coreBtnAcaoPersonagem(Jogador solicitante, EnumPersonagem p) {
 		Main.telaGame.renderizaConsole(solicitante.getNome() + " declara ter e usarah x personagem " + p);
 		Main.game.setJogadorDeQuemSeDuvida(solicitante);
 		Main.game.setUltimoTipoAcao( EnumTipoAcao.PERSONAGEM );
@@ -240,7 +243,7 @@ public class Fluxo {
 		}
 	}
 	
-	void veSeTemDuvidaEChamaAcaoPers(EnumPersonagem p, Jogador solicitante) {
+	public void veSeTemDuvidaEChamaAcaoPers(EnumPersonagem p, Jogador solicitante) { 
 		//System.out.println("VeSeTemDuvidas chamada");
 		boolean alguemDuvidou = rodadaDeDuvidas();
 		boolean ehBlefe = false;
@@ -252,10 +255,13 @@ public class Fluxo {
 			p=Main.game.ultimoPersUsado;
 
 			//esses 2 ifs sao para o caso de terem usado o julius ou o pistone e o alvo tiver duvidado e morrido por isso
-			if(p == EnumPersonagem.JULIUS || p==EnumPersonagem.PISTONE) {//se ele tiver morrido nao faz sentido usar
+			if(alguemDuvidou && (p == EnumPersonagem.JULIUS || p==EnumPersonagem.PISTONE )) {//se ele tiver morrido nao faz sentido usar
+				System.out.println("ok"+p+solicitante.getNome());
 				if (Main.game.getJogadores().contains(Main.game.jogadorDuvidando)) { //o julius ou o pistone
+					System.out.println("ok"+p+solicitante.getNome());
 					Main.controlJogador.acaoPersonagem(p, solicitante);
 				} 
+				
 			} else {
 				Main.controlJogador.acaoPersonagem(p, solicitante);
 			}
@@ -392,7 +398,7 @@ public class Fluxo {
 		return usouPistone;
 	}
 	
-	void encerraGame() {
+	public void encerraGame() {
 		Main.game.calculaVencedor();
 		Main.telaGame.setVisible(false);
 		Main.criaTelaEnd();
@@ -405,7 +411,6 @@ public class Fluxo {
 	public void setOlhandoCartaDoBaralh(boolean olhandoCartaDoBaralho) {
 		this.olhandoCartaDoBaralho = olhandoCartaDoBaralho;
 	}
-	
-	
+
 	
 }

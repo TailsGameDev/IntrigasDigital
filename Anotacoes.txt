@@ -33,3 +33,6 @@ faz CJ.acaoDoBot ->
 btnAcaoPersonagem -> 
 	verifica se o solicitante eh o da vez, ou um alvo do pistone ou magnus. Se nao for, nao faz nada.
 	escreve ("declata ter e usar...")
+
+julius 0:
+AlvoBtn -> Fluxo.chamaMetodoComAlvo()

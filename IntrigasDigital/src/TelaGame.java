@@ -45,18 +45,7 @@ public class TelaGame extends JFrame{
 		jogadores.get(0).setCartasNaMao(c);
 		for(Jogador j : jogadores) {
 			j.torroes = 100;
-		}*/
-		/*
-		jogadores = new ArrayList<Jogador>();
-		
-		Jogador j0 = new Jogador("j0");
-		jogadores.add(j0);
-		
-		Jogador j1 = new Jogador("j1");
-		jogadores.add(j1);
-		
-		Jogador j2 = new Jogador("j2");
-		jogadores.add(j2);
+		}
 		*/
 		//para fins de teste: -----------------------------------------------------------------------
 		
@@ -163,7 +152,14 @@ public class TelaGame extends JFrame{
 					if(Main.game.getUltimoTipoAcao() == EnumTipoAcao.PERSONAGEM) {
 						//se um bot usou acao personagem
 						EnumPersonagem p = Main.game.ultimoPersUsado;
-						Jogador ultimoAlvo = jogadores.get(indexAlvo);
+						
+						Jogador ultimoAlvo =jogadores.get(0);
+						try {
+						ultimoAlvo = jogadores.get(indexAlvo);
+						} catch (IndexOutOfBoundsException e) {
+							System.out.println("Index alvo out of bounds em TelaGame.ProximoBtn");
+						}
+						
 						Jogador jogadorZero = jogadores.get(0);
 						if(p==EnumPersonagem.JULIUS || p == EnumPersonagem.NINETA) {
 							if(ultimoAlvo == jogadorZero) {//se o alvo foi atacado e nao fez nada, toma o ataque
