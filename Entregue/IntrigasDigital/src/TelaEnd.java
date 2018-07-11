@@ -39,6 +39,8 @@ public class TelaEnd extends JFrame{
 				Main.telaCadastroJogadores.setVisible(false);
 				Main.telaAcaoPersonagem.setVisible(false);
 				Main.telaAcaoCombinada.setVisible(false);
+				Main.telaEnd.setVisible(false);
+				setVisible(false);
 				
 				Main.telaEnd = null;
 			}

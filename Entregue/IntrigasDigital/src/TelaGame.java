@@ -200,6 +200,9 @@ public class TelaGame extends JFrame{
 			duvidaBtn = new JButton("Duvidar");
 			duvidaBtn.addActionListener(new ActionListener() {	@Override
 				public void actionPerformed(ActionEvent arg0) {
+					if( ! Main.game.podeDuvidarAgora)
+						return;
+				
 					if(Main.game.getUltimoTipoAcao() != EnumTipoAcao.NAODUVIDAVEL) {
 						Main.game.jogadorDuvidando=jogadores.get(0);
 						boolean ehBlefe=false;

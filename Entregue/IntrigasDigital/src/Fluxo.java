@@ -148,6 +148,7 @@ public class Fluxo implements interfaceFluxo{
 	}
 	
 	public void passaVez() {
+		Main.game.podeDuvidarAgora = false;
 		Main.game.botDecidiuSeUsaDefesa = false;
 		int index = Main.descobreIndexDoJogadorJ(Main.game.getJogadorDaVez());
 		//passando a vez mesmo
@@ -192,6 +193,12 @@ public class Fluxo implements interfaceFluxo{
 		Main.game.setUltimoTipoAcao( EnumTipoAcao.PERSONAGEM );
 		//EnumPersonagem pAntigo = Main.game.getUltimoPersUsado();
 		Main.game.setUltimoPersUsado(p);
+		
+		Main.game.podeDuvidarAgora = true;
+		//quando o jogador
+		if(Main.game.jogadores.get(0).getCartasNaMao().size() == 0) { //o duvidarBtn ficarah sempre desativado qd o player morrer
+			Main.game.podeDuvidarAgora = false;
+		}
 		//System.out.println("o personagem e o "+p);
 		//System.out.println(Main.game.getUltimoPersUsado()+"eh o ultimo usado do game");
 		

@@ -12,10 +12,12 @@ public class Jogador {
 	}
 	
 	public Carta perdeCartaAleatoria() {
+
 		SecureRandom random = new SecureRandom();
 		int aleat = random.nextInt(cartasNaMao.size());
 		Carta perdida=cartasNaMao.get(aleat);
 		cartasNaMao.remove(aleat);
+		
 		return perdida;
 	}
 	
