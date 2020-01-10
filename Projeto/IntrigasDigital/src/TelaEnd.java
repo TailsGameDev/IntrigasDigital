@@ -1,7 +1,6 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 import javax.swing.*;
 
@@ -25,7 +24,7 @@ public class TelaEnd extends JFrame{
 				setVisible(false);
 				Main.game = new ControlGame();
 				Main.fluxo= new Fluxo();
-				Main.telaInit = new TelaInit();
+				Main.TelaInicial = new TelaInicial();
 				Main.controlJogador = new ControlJogador();
 				
 				Main.telaCadastroJogadores = new TelaCadastroJogadores();
@@ -35,7 +34,7 @@ public class TelaEnd extends JFrame{
 				Main.telaEnd.setVisible(false);
 
 				
-				Main.fluxo.ativaTelaInit();
+				Main.fluxo.ativaTelaInicial();
 				Main.telaCadastroJogadores.setVisible(false);
 				Main.telaAcaoPersonagem.setVisible(false);
 				Main.telaAcaoCombinada.setVisible(false);

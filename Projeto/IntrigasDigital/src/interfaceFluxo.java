@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import javax.swing.JTextField;
 
 public interface interfaceFluxo {
-	void ativaTelaInit();
+	void ativaTelaInicial();
 	void ativaTelaCadastro();
 	void ativaTelaGame();
 	void ativaTelaAcaoPersonagem();

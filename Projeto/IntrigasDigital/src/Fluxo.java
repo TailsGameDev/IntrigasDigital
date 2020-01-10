@@ -10,8 +10,8 @@ public class Fluxo implements interfaceFluxo{
 	int umaDuvidaACadaQuantasJogadas = 12;
 	int umMagnusACadaQuantosAtks = 3;
 	
-	public void ativaTelaInit() {
-		Main.telaInit.setVisible(true);
+	public void ativaTelaInicial() {
+		Main.TelaInicial.setVisible(true);
 	}
 	
 	public void ativaTelaCadastro() {
