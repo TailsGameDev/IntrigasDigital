@@ -57,7 +57,7 @@ public class TelaInicial extends JFrame {
 
 	void MakeLogoLabel(){
 		Icon icon = new ImageIcon(getClass().getResource("5acucares.png"));
-		logoLabel = new JlogoLabel();
+		logoLabel = new JLabel();
 		logoLabel.setIcon(icon);
 		imgPanel.add(logoLabel);
 	}
