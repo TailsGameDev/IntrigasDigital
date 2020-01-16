@@ -1,2 +1,2 @@
-# Trabalho2DSO1
-Trabalho 2 de DSO1 UFSC 2018-1
+Implementação do jogo 'Intrigas', do Rotfather, em Java com Swing.
+Esse foi o trabalho 2 da disciplina de Orogramação Orientada a Objetos 2, de Ciências da Computação, UFSC.
